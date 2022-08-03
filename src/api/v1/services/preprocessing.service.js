@@ -1,14 +1,8 @@
 "use strict";
 const sastrawijs = require("sastrawijs");
-const {
-  stopword,
-  penangananNamaKolom,
-  penangananNamaTabel,
-  sinonim,
-} = require("../../../../public");
+const sentenizeHelper = require("../helpers/sentenize.helper");
 const tokenizeHelper = require("../helpers/tokenize.helper");
-const ColumnService = require("./column.service");
-const TableService = require("./table.service");
+const DictionaryService = require("./dictionary.service");
 
 class PreprocessingService {
   static async removeSymbol(setenceParam) {
@@ -23,17 +17,19 @@ class PreprocessingService {
   }
 
   static async stopwordFilter(setenceParam) {
+    const stopwordDictionary = await DictionaryService.getStopwordList();
     return setenceParam.filter((element) => {
-      return !stopword.includes(element) && element !== "";
+      return !stopwordDictionary.includes(element) && element !== "";
     });
   }
 
   static async synonymHandler(setenceParam) {
     let result;
-    Object.keys(sinonim).forEach((element) => {
+    const synonymDictionary = await DictionaryService.getSynonymList();
+    Object.keys(synonymDictionary).forEach((element) => {
       result = setenceParam.replace(
         new RegExp(element, "gi"),
-        sinonim[element]
+        synonymDictionary[element]
       );
     });
 
@@ -42,10 +38,12 @@ class PreprocessingService {
 
   static async columnHandler(setenceParam) {
     let result;
-    Object.keys(penangananNamaKolom).forEach((element) => {
+    const columnNameHandlerDictionary =
+      await DictionaryService.getColumnNameHandlerList();
+    Object.keys(columnNameHandlerDictionary).forEach((element) => {
       result = setenceParam.replace(
         new RegExp(element, "gi"),
-        penangananNamaKolom[element]
+        columnNameHandlerDictionary[element]
       );
     });
     return result;
@@ -53,10 +51,12 @@ class PreprocessingService {
 
   static async tableHandler(setenceParam) {
     let result;
-    Object.keys(penangananNamaTabel).forEach((element) => {
+    const tableNameHandlerDictionary =
+      await DictionaryService.getTableNameHandlerList();
+    Object.keys(tableNameHandlerDictionary).forEach((element) => {
       result = setenceParam.replace(
         new RegExp(element, "gi"),
-        penangananNamaTabel[element]
+        tableNameHandlerDictionary[element]
       );
     });
     return result;
@@ -65,8 +65,8 @@ class PreprocessingService {
   static async stemmer(setenceParam) {
     const token = await tokenizeHelper(setenceParam);
     const stemmer = new sastrawijs.Stemmer();
-    const tableList = await TableService.getListTable();
-    const columnList = await ColumnService.getListColumn();
+    const tableList = await DictionaryService.getTableList();
+    const columnList = await DictionaryService.getColumnList();
     let result = [];
 
     token.forEach((element) => {
@@ -78,6 +78,27 @@ class PreprocessingService {
         result.push(stemmer.stem(element));
       }
     });
+
+    return result;
+  }
+
+  static async run(setenceParam) {
+    let setence = setenceParam.toLowerCase();
+
+    setence = await this.globalReplace(setence, "&", "dan");
+    setence = await this.globalReplace(setence, "/", "atau");
+    setence = await this.globalReplace(setence, ",", " ,");
+    setence = await this.removeSymbol(setence);
+
+    let stemming = await this.stemmer(setence);
+    stemming = await this.stopwordFilter(stemming);
+
+    setence = await sentenizeHelper(stemming);
+    setence = await this.synonymHandler(setence);
+    setence = await this.columnHandler(setence);
+    setence = await this.tableHandler(setence);
+
+    let result = await tokenizeHelper(setence);
 
     return result;
   }

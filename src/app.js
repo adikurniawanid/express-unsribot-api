@@ -5,7 +5,7 @@ var logger = require("morgan");
 
 var indexRouter = require("./api/v1/routes/index");
 const { errorHandler } = require("./api/v1/middlewares");
-const PreprocessingController = require("./api/v1/controllers/preprocessing.controller");
+const Nl2sqlController = require("./api/v1/controllers/nl2sql.controller");
 
 var app = express();
 
@@ -16,7 +16,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/nl2sql", PreprocessingController.run);
+app.use("/nl2sql", Nl2sqlController.run);
 app.use(errorHandler);
 
 module.exports = app;
