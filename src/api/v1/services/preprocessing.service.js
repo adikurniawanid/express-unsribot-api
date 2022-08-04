@@ -37,15 +37,17 @@ class PreprocessingService {
   }
 
   static async columnHandler(setenceParam) {
-    let result;
+    let result = setenceParam;
     const columnNameHandlerDictionary =
       await DictionaryService.getColumnNameHandlerList();
+
     Object.keys(columnNameHandlerDictionary).forEach((element) => {
-      result = setenceParam.replace(
+      result = result.replace(
         new RegExp(element, "gi"),
         columnNameHandlerDictionary[element]
       );
     });
+
     return result;
   }
 

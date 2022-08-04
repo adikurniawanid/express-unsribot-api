@@ -76,9 +76,9 @@ class ParserService {
                 "." +
                 tokenParam[index] +
                 " LIKE " +
-                '"' +
+                '"%' +
                 tokenParam[index + 1] +
-                '"'
+                '%"'
             );
           }
         }
@@ -92,7 +92,7 @@ class ParserService {
     }
 
     if (column.length === 0) {
-      column = "*";
+      column = ["*"];
     }
 
     return [column, columnCondition];
@@ -102,8 +102,6 @@ class ParserService {
     const selectIdentify = await this.identifySelect(tokenParam);
     const tableIdentify = await this.identifyTable(tokenParam);
     const conditionIdentify = await this.identifyWhere(tokenParam);
-    const objectColumnByTableIdentify =
-      await DictionaryService.getObjectColumnListByTable(tableIdentify);
     const logicOperatorIdentify = await this.identifyLogicOperator(
       tokenParam,
       conditionIdentify
