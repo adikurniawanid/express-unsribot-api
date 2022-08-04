@@ -24,10 +24,10 @@ class PreprocessingService {
   }
 
   static async synonymHandler(setenceParam) {
-    let result;
+    let result = setenceParam;
     const synonymDictionary = await DictionaryService.getSynonymList();
     Object.keys(synonymDictionary).forEach((element) => {
-      result = setenceParam.replace(
+      result = result.replace(
         new RegExp(element, "gi"),
         synonymDictionary[element]
       );
@@ -52,11 +52,11 @@ class PreprocessingService {
   }
 
   static async tableHandler(setenceParam) {
-    let result;
+    let result = setenceParam;
     const tableNameHandlerDictionary =
       await DictionaryService.getTableNameHandlerList();
     Object.keys(tableNameHandlerDictionary).forEach((element) => {
-      result = setenceParam.replace(
+      result = result.replace(
         new RegExp(element, "gi"),
         tableNameHandlerDictionary[element]
       );

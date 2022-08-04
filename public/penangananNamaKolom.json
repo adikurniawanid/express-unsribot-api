@@ -1,7 +1,7 @@
 {
+"nama mata kuliah":"nama_mata_kuliah",
 "jenis kelamin":"jenis_kelamin",
-"dosen pembimbing akademik":"dosen_pembimbing_akademik",
-"tahun angkatan":"angkatan",
+"dosen bimbing":"dosen_pembimbing_akademik",
 "program studi":"program_studi",
 "nama jurusan":"nama_jurusan"
 }

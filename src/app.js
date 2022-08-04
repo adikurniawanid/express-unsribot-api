@@ -1,13 +1,13 @@
-var express = require("express");
-var path = require("path");
-var cookieParser = require("cookie-parser");
-var logger = require("morgan");
+const express = require("express");
+const path = require("path");
+const cookieParser = require("cookie-parser");
+const logger = require("morgan");
 
-var indexRouter = require("./api/v1/routes/index");
+const indexRouter = require("./api/v1/routes/index");
 const { errorHandler } = require("./api/v1/middlewares");
 const Nl2sqlController = require("./api/v1/controllers/nl2sql.controller");
 
-var app = express();
+const app = express();
 
 app.use(logger("dev"));
 app.use(express.json());

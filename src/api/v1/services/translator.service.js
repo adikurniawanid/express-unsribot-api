@@ -5,7 +5,7 @@ class TranslatorService {
     const queryForming = [];
 
     if (parserParam.selectIdentify === true) {
-      queryForming.push("SELECT");
+      queryForming.push("SELECT DISTINCT");
     }
 
     if (parserParam.columnIdentify.length > 0) {
@@ -19,7 +19,7 @@ class TranslatorService {
 
     if (
       parserParam.conditionIdentify.length > 0 &&
-      parserParam.conditionIdentify.length > 0
+      parserParam.columnConditionIdentify.length > 0
     ) {
       queryForming.push("WHERE");
       queryFormConditionLoop: for (
@@ -29,7 +29,9 @@ class TranslatorService {
       ) {
         queryForming.push(parserParam.columnConditionIdentify[index]);
         if (parserParam.columnConditionIdentify[index + 1] !== undefined) {
-          queryForming.push(parserParam.logicOperatorIdentify[index]);
+          parserParam.logicOperatorIdentify[index]
+            ? queryForming.push(parserParam.logicOperatorIdentify[index])
+            : queryForming.push("AND");
         }
       }
     }

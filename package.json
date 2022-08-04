@@ -16,6 +16,7 @@
     "morgan": "~1.9.1",
     "mysql2": "^2.3.3",
     "nalapa": "^1.11.0",
+    "node-telegram-bot-api": "^0.58.0",
     "pg": "^8.7.3",
     "sastrawijs": "^1.0.4",
     "sequelize": "^6.21.3",
