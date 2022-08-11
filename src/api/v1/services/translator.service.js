@@ -5,7 +5,7 @@ class TranslatorService {
     const queryForming = [];
 
     if (parserParam.selectIdentify === true) {
-      queryForming.push("SELECT DISTINCT");
+      queryForming.push("SELECT");
     }
 
     if (parserParam.columnIdentify.length > 0) {
@@ -34,6 +34,11 @@ class TranslatorService {
             : queryForming.push("AND");
         }
       }
+    }
+
+    if (parserParam.orderIdentify.length > 0) {
+      queryForming.push("ORDER BY");
+      queryForming.push(parserParam.orderIdentify.join(", "));
     }
 
     const query = queryForming.join(" ");

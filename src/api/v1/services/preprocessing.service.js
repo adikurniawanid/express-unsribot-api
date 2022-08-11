@@ -66,7 +66,9 @@ class PreprocessingService {
 
   static async stemmer(setenceParam) {
     const token = await tokenizeHelper(setenceParam);
-    const stemmer = new sastrawijs.Stemmer();
+    const stemmer = new sastrawijs.Stemmer(
+      await DictionaryService.getStemmerCustomList()
+    );
     const tableList = await DictionaryService.getTableList();
     const columnList = await DictionaryService.getColumnList();
     let result = [];
@@ -91,6 +93,15 @@ class PreprocessingService {
     setence = await this.globalReplace(setence, "/", "atau");
     setence = await this.globalReplace(setence, ",", " ,");
     setence = await this.removeSymbol(setence);
+
+    setence = await this.globalReplace(
+      setence,
+      "kurang dari sama dengan",
+      "<="
+    );
+    setence = await this.globalReplace(setence, "lebih dari sama dengan", ">=");
+    setence = await this.globalReplace(setence, "lebih dari", ">");
+    setence = await this.globalReplace(setence, "kurang dari", "<");
 
     let stemming = await this.stemmer(setence);
     stemming = await this.stopwordFilter(stemming);

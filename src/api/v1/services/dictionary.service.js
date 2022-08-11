@@ -7,6 +7,7 @@ const {
   stopword,
   penangananNamaKolom,
   penangananNamaTabel,
+  stemmer,
 } = require("../../../../public");
 const sequelizeConfig = require("../../../config/sequelize.config");
 
@@ -86,6 +87,10 @@ class DictionaryService {
     }
 
     return result;
+  }
+
+  static async getStemmerCustomList() {
+    return stemmer;
   }
 }
 
