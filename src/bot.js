@@ -73,11 +73,16 @@ bot.onText(/\/query (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
 
   try {
-    const resp = (
+    const result = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
         setence: match[1],
       })
-    ).data.data.resultQuery;
+    ).data.data;
+
+    const resp = {
+      sql: result.translator,
+      result: result.resultQuery,
+    };
 
     bot.sendMessage(chatId, JSON.stringify(resp, null, 2));
   } catch (error) {

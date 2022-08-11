@@ -117,7 +117,7 @@ class ParserService {
             }
           }
         }
-      } else {
+      } else if (!conditionStatus && !orderStatus) {
         for (const key in objectIdentifyColumn) {
           if (objectIdentifyColumn[key].includes(tokenParam[index])) {
             column.push(key + "." + tokenParam[index]);
