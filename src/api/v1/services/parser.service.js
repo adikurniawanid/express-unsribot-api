@@ -138,11 +138,14 @@ class ParserService {
       await DictionaryService.getObjectColumnListByTable(identifyTableParam);
     const result = [];
 
-    for (
+    orderLoop: for (
       let index = tokenParam.findIndex((element) => element === "urut");
       index < tokenParam.length;
       index++
     ) {
+      if (index === -1) {
+        break orderLoop;
+      }
       for (const key in objectIdentifyColumn) {
         if (objectIdentifyColumn[key].includes(tokenParam[index])) {
           if (
