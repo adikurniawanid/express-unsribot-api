@@ -68,3 +68,19 @@ bot.onText(/\/detail (.+)/, async (msg, match) => {
     bot.sendMessage(chatId, error.response.data.message);
   }
 });
+
+bot.onText(/\/query (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+
+  try {
+    const resp = (
+      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
+        setence: match[1],
+      })
+    ).data.data.resultQuery;
+
+    bot.sendMessage(chatId, JSON.stringify(resp, null, 2));
+  } catch (error) {
+    bot.sendMessage(chatId, error.response.data.message);
+  }
+});

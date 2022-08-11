@@ -99,7 +99,17 @@ class PreprocessingService {
       "kurang dari sama dengan",
       "<="
     );
+    setence = await this.globalReplace(
+      setence,
+      "lebih kecil sama dengan",
+      "<="
+    );
     setence = await this.globalReplace(setence, "lebih dari sama dengan", ">=");
+    setence = await this.globalReplace(
+      setence,
+      "lebih besar sama dengan",
+      ">="
+    );
     setence = await this.globalReplace(setence, "lebih dari", ">");
     setence = await this.globalReplace(setence, "kurang dari", "<");
 

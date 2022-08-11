@@ -2,8 +2,8 @@
 
 const PreprocessingService = require("../services/preprocessing.service");
 const ParserService = require("../services/parser.service");
-const { identifyLogicOperator } = require("../services/parser.service");
 const TranslatorService = require("../services/translator.service");
+const { sequelize } = require("../models");
 
 class Nl2sqlController {
   static async run(req, res, next) {
@@ -25,11 +25,14 @@ class Nl2sqlController {
 
       const translator = await TranslatorService.run(parser);
 
+      const [resultQuery, metadata] = await sequelize.query(translator);
+
       res.status(200).json({
         data: {
           preprocessing,
           parser,
           translator,
+          resultQuery,
         },
       });
     } catch (error) {
