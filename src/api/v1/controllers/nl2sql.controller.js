@@ -25,7 +25,11 @@ class Nl2sqlController {
 
       const translator = await TranslatorService.run(parser);
 
-      const [resultQuery, metadata] = await sequelize.query(translator);
+      let [resultQuery, metadata] = await sequelize.query(translator);
+
+      if (resultQuery.length === 0) {
+        resultQuery = "Data not found";
+      }
 
       res.status(200).json({
         data: {

@@ -93,31 +93,19 @@ class PreprocessingService {
     setence = await this.globalReplace(setence, "/", "atau");
     setence = await this.globalReplace(setence, ",", " ,");
     setence = await this.removeSymbol(setence);
-
-    setence = await this.globalReplace(
-      setence,
-      "kurang dari sama dengan",
-      "<="
-    );
-    setence = await this.globalReplace(
-      setence,
-      "lebih kecil sama dengan",
-      "<="
-    );
-    setence = await this.globalReplace(setence, "lebih dari sama dengan", ">=");
-    setence = await this.globalReplace(
-      setence,
-      "lebih besar sama dengan",
-      ">="
-    );
-    setence = await this.globalReplace(setence, "lebih dari", ">");
-    setence = await this.globalReplace(setence, "kurang dari", "<");
     setence = await this.synonymHandler(setence);
 
     let stemming = await this.stemmer(setence);
     stemming = await this.stopwordFilter(stemming);
 
     setence = await sentenizeHelper(stemming);
+    setence = await this.globalReplace(setence, "besar sama", ">=");
+    setence = await this.globalReplace(setence, "kurang sama", "<=");
+    setence = await this.globalReplace(setence, "kecil sama", "<=");
+    setence = await this.globalReplace(setence, "atas", ">");
+    setence = await this.globalReplace(setence, "bawah", "<");
+    setence = await this.globalReplace(setence, "kurang", "<");
+    setence = await this.globalReplace(setence, "besar", "<");
     setence = await this.columnHandler(setence);
     setence = await this.tableHandler(setence);
 
