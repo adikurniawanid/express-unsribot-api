@@ -41,6 +41,10 @@ class TranslatorService {
       queryForming.push(parserParam.orderIdentify.join(", "));
     }
 
+    if (parserParam.limitIdentify.length) {
+      queryForming.push(parserParam.limitIdentify);
+    }
+
     const query = queryForming.join(" ");
 
     return query;

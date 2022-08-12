@@ -190,6 +190,20 @@ class ParserService {
     return result;
   }
 
+  static async identifyLimit(tokenParam) {
+    let result = false;
+    tokenParam.forEach((element, index) => {
+      if (
+        element === "batas" &&
+        typeof Number(tokenParam[index + 1]) == "number" &&
+        !isNaN(Number(tokenParam[index + 1]))
+      ) {
+        result = "LIMIT " + Number(tokenParam[index + 1]);
+      }
+    });
+    return result;
+  }
+
   static async run(tokenParam) {
     const selectIdentify = await this.identifySelect(tokenParam);
     const tableIdentify = await this.identifyTable(tokenParam);
@@ -206,6 +220,7 @@ class ParserService {
     const columnIdentify = identifyingColumn[0];
     const columnConditionIdentify = identifyingColumn[1];
     const orderIdentify = await this.identifyOrder(tokenParam, tableIdentify);
+    const limitIdentify = await this.identifyLimit(tokenParam);
 
     return {
       selectIdentify,
@@ -215,6 +230,7 @@ class ParserService {
       columnConditionIdentify,
       logicOperatorIdentify,
       orderIdentify,
+      limitIdentify,
     };
   }
 }

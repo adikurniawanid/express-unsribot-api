@@ -99,13 +99,13 @@ class PreprocessingService {
     stemming = await this.stopwordFilter(stemming);
 
     setence = await sentenizeHelper(stemming);
-    setence = await this.globalReplace(setence, "besar sama", ">=");
-    setence = await this.globalReplace(setence, "kurang sama", "<=");
-    setence = await this.globalReplace(setence, "kecil sama", "<=");
-    setence = await this.globalReplace(setence, "atas", ">");
-    setence = await this.globalReplace(setence, "bawah", "<");
-    setence = await this.globalReplace(setence, "kurang", "<");
-    setence = await this.globalReplace(setence, "besar", "<");
+    setence = await this.globalReplace(setence, " besar sama ", " >= ");
+    setence = await this.globalReplace(setence, " kurang sama ", " <= ");
+    setence = await this.globalReplace(setence, " kecil sama ", " <= ");
+    setence = await this.globalReplace(setence, " atas ", " > ");
+    setence = await this.globalReplace(setence, " bawah ", " < ");
+    setence = await this.globalReplace(setence, " kurang ", " < ");
+    setence = await this.globalReplace(setence, " besar ", " < ");
     setence = await this.columnHandler(setence);
     setence = await this.tableHandler(setence);
 
