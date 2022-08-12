@@ -7,9 +7,8 @@ const bot = new TelegramBot(telegramBotConfig.TELEGRAM_BOT_TOKEN, {
 });
 
 bot.onText(/\/pre (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
   try {
-    const chatId = msg.chat.id;
-
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
         setence: match[1],
@@ -25,9 +24,8 @@ bot.onText(/\/pre (.+)/, async (msg, match) => {
 });
 
 bot.onText(/\/parser (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
   try {
-    const chatId = msg.chat.id;
-
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
         setence: match[1],
@@ -44,7 +42,6 @@ bot.onText(/\/parser (.+)/, async (msg, match) => {
 
 bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
@@ -61,7 +58,6 @@ bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
 
 bot.onText(/\/detail (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
@@ -79,7 +75,6 @@ bot.onText(/\/detail (.+)/, async (msg, match) => {
 
 bot.onText(/\/query (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-
   try {
     const result = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
@@ -99,7 +94,6 @@ bot.onText(/\/query (.+)/, async (msg, match) => {
 
 bot.onText(/\/querySendOne (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
-
   try {
     const result = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
