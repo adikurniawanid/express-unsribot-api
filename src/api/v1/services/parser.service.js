@@ -26,13 +26,17 @@ class ParserService {
   }
 
   static async identifyWhere(tokenParam) {
+    let result = false;
     const coditionDictionary = await DictionaryService.getConditionList();
     for (let index = 0; index < tokenParam.length; index++) {
-      if (coditionDictionary.includes(tokenParam[index])) {
-        return tokenParam[index];
+      if (coditionDictionary.includes(tokenParam[index]) && !result) {
+        result = tokenParam[index];
+      } else if (coditionDictionary.includes(tokenParam[index]) && result) {
+        tokenParam.splice(index, 1);
+        index--;
       }
     }
-    return false;
+    return result;
   }
 
   static async identifyLogicOperator(tokenParam, identifyWhereParam) {
@@ -85,6 +89,28 @@ class ParserService {
                   '"%' +
                   tokenParam[index + 2] +
                   '%"'
+              );
+              index += 2;
+            } else if (tokenParam[index + 1] === "awal") {
+              columnCondition.push(
+                key +
+                  "." +
+                  tokenParam[index] +
+                  " LIKE " +
+                  '"' +
+                  tokenParam[index + 2] +
+                  '%"'
+              );
+              index += 2;
+            } else if (tokenParam[index + 1] === "akhir") {
+              columnCondition.push(
+                key +
+                  "." +
+                  tokenParam[index] +
+                  " LIKE " +
+                  '"%' +
+                  tokenParam[index + 2] +
+                  '"'
               );
               index += 2;
             } else if (

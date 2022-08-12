@@ -112,12 +112,12 @@ class PreprocessingService {
     );
     setence = await this.globalReplace(setence, "lebih dari", ">");
     setence = await this.globalReplace(setence, "kurang dari", "<");
+    setence = await this.synonymHandler(setence);
 
     let stemming = await this.stemmer(setence);
     stemming = await this.stopwordFilter(stemming);
 
     setence = await sentenizeHelper(stemming);
-    setence = await this.synonymHandler(setence);
     setence = await this.columnHandler(setence);
     setence = await this.tableHandler(setence);
 
