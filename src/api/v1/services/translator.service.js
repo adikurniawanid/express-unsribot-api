@@ -6,6 +6,14 @@ class TranslatorService {
 
     if (parserParam.selectIdentify === true) {
       queryForming.push("SELECT");
+      if (parserParam.distinctIdentify === true) {
+        queryForming.push("DISTINCT");
+      }
+    } else {
+      throw {
+        status: 400,
+        message: "SELECT not found",
+      };
     }
 
     if (parserParam.columnIdentify.length > 0) {
@@ -15,6 +23,11 @@ class TranslatorService {
     if (parserParam.tableIdentify.length > 0) {
       queryForming.push("FROM");
       queryForming.push(parserParam.tableIdentify.join(", "));
+    } else {
+      throw {
+        status: 404,
+        message: "Table not found",
+      };
     }
 
     if (

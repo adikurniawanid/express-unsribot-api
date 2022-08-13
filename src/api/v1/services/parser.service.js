@@ -204,6 +204,13 @@ class ParserService {
     return result;
   }
 
+  static async identifyDistinct(tokenParam) {
+    if (tokenParam.includes("unik")) {
+      return true;
+    }
+    return false;
+  }
+
   static async run(tokenParam) {
     const selectIdentify = await this.identifySelect(tokenParam);
     const tableIdentify = await this.identifyTable(tokenParam);
@@ -221,6 +228,7 @@ class ParserService {
     const columnConditionIdentify = identifyingColumn[1];
     const orderIdentify = await this.identifyOrder(tokenParam, tableIdentify);
     const limitIdentify = await this.identifyLimit(tokenParam);
+    const distinctIdentify = await this.identifyDistinct(tokenParam);
 
     return {
       selectIdentify,
@@ -231,6 +239,7 @@ class ParserService {
       logicOperatorIdentify,
       orderIdentify,
       limitIdentify,
+      distinctIdentify,
     };
   }
 }
