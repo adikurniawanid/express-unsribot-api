@@ -10,10 +10,10 @@ bot.onText(/\/pre (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   try {
     const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
+      await axios.post(telegramBotConfig.API_URL + "/preprocessing", {
         setence: match[1],
       })
-    ).data.data.preprocessing;
+    ).data.data;
 
     bot.sendMessage(chatId, JSON.stringify(resp), {
       reply_to_message_id: msg.message_id,
@@ -27,10 +27,43 @@ bot.onText(/\/parser (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   try {
     const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
+      await axios.post(telegramBotConfig.API_URL + "/parser", {
         setence: match[1],
       })
-    ).data.data.parser;
+    ).data.data;
+
+    bot.sendMessage(chatId, JSON.stringify(resp, null, 2), {
+      reply_to_message_id: msg.message_id,
+    });
+  } catch (error) {
+    bot.sendMessage(chatId, error.response.data.message);
+  }
+});
+
+bot.onText(/\/translator (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  try {
+    const resp = (
+      await axios.post(telegramBotConfig.API_URL + "/translator", {
+        setence: match[1],
+      })
+    ).data.data;
+    bot.sendMessage(chatId, resp, {
+      reply_to_message_id: msg.message_id,
+    });
+  } catch (error) {
+    bot.sendMessage(chatId, error.response.data.message);
+  }
+});
+
+bot.onText(/\/query (.+)/, async (msg, match) => {
+  const chatId = msg.chat.id;
+  try {
+    const resp = (
+      await axios.post(telegramBotConfig.API_URL + "/query", {
+        setence: match[1],
+      })
+    ).data.data;
 
     bot.sendMessage(chatId, JSON.stringify(resp, null, 2), {
       reply_to_message_id: msg.message_id,
@@ -47,22 +80,6 @@ bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
         setence: match[1],
       })
-    ).data.data.translator;
-    bot.sendMessage(chatId, resp, {
-      reply_to_message_id: msg.message_id,
-    });
-  } catch (error) {
-    bot.sendMessage(chatId, error.response.data.message);
-  }
-});
-
-bot.onText(/\/detail (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        setence: match[1],
-      })
     ).data.data;
 
     bot.sendMessage(chatId, JSON.stringify(resp, null, 2), {
@@ -73,26 +90,7 @@ bot.onText(/\/detail (.+)/, async (msg, match) => {
   }
 });
 
-bot.onText(/\/query (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const result = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        setence: match[1],
-      })
-    ).data.data;
-
-    const resp = result.resultQuery;
-
-    bot.sendMessage(chatId, JSON.stringify(resp, null, 2), {
-      reply_to_message_id: msg.message_id,
-    });
-  } catch (error) {
-    bot.sendMessage(chatId, error.response.data.message);
-  }
-});
-
-bot.onText(/\/querySendOne (.+)/, async (msg, match) => {
+bot.onText(/\/querySingle (.+)/, async (msg, match) => {
   const chatId = msg.chat.id;
   try {
     const result = (
