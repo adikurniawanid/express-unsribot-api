@@ -2,7 +2,7 @@
 const { body } = require("express-validator");
 
 const parserValidationRules = () => {
-  return [body("setence").notEmpty().withMessage("setence is required")];
+  return [body("setence").notEmpty().withMessage("Setence is required")];
 };
 
 module.exports = {

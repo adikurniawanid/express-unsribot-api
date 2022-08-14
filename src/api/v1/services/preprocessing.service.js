@@ -3,7 +3,7 @@ const sastrawijs = require("sastrawijs");
 const sentenizeHelper = require("../helpers/sentenize.helper");
 const tokenizeHelper = require("../helpers/tokenize.helper");
 const DictionaryService = require("./dictionary.service");
-
+const { perbandingan } = require("../../../../public");
 class PreprocessingService {
   static async removeSymbol(setenceParam) {
     return setenceParam.replace(
@@ -86,12 +86,27 @@ class PreprocessingService {
     return result;
   }
 
+  static async conjunctionHandler(setenceParam) {
+    let result = setenceParam;
+    result = await this.globalReplace(result, "&", "dan");
+    result = await this.globalReplace(result, "/", "atau");
+    result = await this.globalReplace(result, ",", " ,");
+
+    return result;
+  }
+
+  static async comparisonOperatorToSymbol(setenceParam) {
+    let result = setenceParam;
+    for (const key in perbandingan) {
+      result = await this.globalReplace(result, key, perbandingan[key]);
+    }
+    return result;
+  }
+
   static async run(setenceParam) {
     let setence = setenceParam.toLowerCase();
 
-    setence = await this.globalReplace(setence, "&", "dan");
-    setence = await this.globalReplace(setence, "/", "atau");
-    setence = await this.globalReplace(setence, ",", " ,");
+    setence = await this.conjunctionHandler(setence);
     setence = await this.removeSymbol(setence);
     setence = await this.synonymHandler(setence);
 
@@ -99,13 +114,7 @@ class PreprocessingService {
     stemming = await this.stopwordFilter(stemming);
 
     setence = await sentenizeHelper(stemming);
-    setence = await this.globalReplace(setence, " besar sama ", " >= ");
-    setence = await this.globalReplace(setence, " kurang sama ", " <= ");
-    setence = await this.globalReplace(setence, " kecil sama ", " <= ");
-    setence = await this.globalReplace(setence, " atas ", " > ");
-    setence = await this.globalReplace(setence, " bawah ", " < ");
-    setence = await this.globalReplace(setence, " kurang ", " < ");
-    setence = await this.globalReplace(setence, " besar ", " < ");
+    setence = await this.comparisonOperatorToSymbol(setence);
     setence = await this.columnHandler(setence);
     setence = await this.tableHandler(setence);
 

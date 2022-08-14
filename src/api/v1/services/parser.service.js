@@ -219,13 +219,14 @@ class ParserService {
       tokenParam,
       conditionIdentify
     );
-    const identifyingColumn = await ParserService.identifyColumn(
-      tokenParam,
-      tableIdentify,
-      conditionIdentify
-    );
-    const columnIdentify = identifyingColumn[0];
-    const columnConditionIdentify = identifyingColumn[1];
+
+    const [columnIdentify, columnConditionIdentify] =
+      await ParserService.identifyColumn(
+        tokenParam,
+        tableIdentify,
+        conditionIdentify
+      );
+
     const orderIdentify = await this.identifyOrder(tokenParam, tableIdentify);
     const limitIdentify = await this.identifyLimit(tokenParam);
     const distinctIdentify = await this.identifyDistinct(tokenParam);

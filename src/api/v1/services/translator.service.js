@@ -11,7 +11,7 @@ class TranslatorService {
       }
     } else {
       throw {
-        status: 400,
+        status: 404,
         message: "SELECT not found",
       };
     }

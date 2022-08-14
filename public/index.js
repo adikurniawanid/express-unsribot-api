@@ -5,6 +5,7 @@ const penangananNamaTabel = require("./penangananNamaTabel.json");
 const sinonim = require("./sinonim.json");
 const stopword = require("./stopword.json");
 const stemmer = require("./stemmer.json");
+const perbandingan = require("./perbandingan.json");
 
 module.exports = {
   kataPerintah,
@@ -14,4 +15,5 @@ module.exports = {
   sinonim,
   stopword,
   stemmer,
+  perbandingan,
 };
