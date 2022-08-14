@@ -13,7 +13,7 @@ class QueryController {
         data: await querySequelizeHelper(
           await TranslatorService.run(
             await ParserService.run(
-              await PreprocessingService.run(req.body.setence)
+              await PreprocessingService.run(req.body.sentence)
             )
           )
         ),

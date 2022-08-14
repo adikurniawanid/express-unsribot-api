@@ -5,7 +5,7 @@ class PreprocessingController {
   static async run(req, res, next) {
     try {
       res.status(200).json({
-        data: await PreprocessingService.run(req.body.setence),
+        data: await PreprocessingService.run(req.body.sentence),
       });
     } catch (error) {
       next(error);

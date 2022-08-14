@@ -11,7 +11,7 @@ class TranslatorController {
       res.status(200).json({
         data: await TranslatorService.run(
           await ParserService.run(
-            await PreprocessingService.run(req.body.setence)
+            await PreprocessingService.run(req.body.sentence)
           )
         ),
       });

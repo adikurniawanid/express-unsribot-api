@@ -11,7 +11,7 @@ bot.onText(/\/pre (.+)/, async (msg, match) => {
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/preprocessing", {
-        setence: match[1],
+        sentence: match[1],
       })
     ).data.data;
 
@@ -28,7 +28,7 @@ bot.onText(/\/parser (.+)/, async (msg, match) => {
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/parser", {
-        setence: match[1],
+        sentence: match[1],
       })
     ).data.data;
 
@@ -45,7 +45,7 @@ bot.onText(/\/translator (.+)/, async (msg, match) => {
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/translator", {
-        setence: match[1],
+        sentence: match[1],
       })
     ).data.data;
     bot.sendMessage(chatId, resp, {
@@ -61,7 +61,7 @@ bot.onText(/\/query (.+)/, async (msg, match) => {
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/query", {
-        setence: match[1],
+        sentence: match[1],
       })
     ).data.data;
 
@@ -78,7 +78,7 @@ bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
   try {
     const resp = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        setence: match[1],
+        sentence: match[1],
       })
     ).data.data;
 
@@ -95,7 +95,7 @@ bot.onText(/\/querySingle (.+)/, async (msg, match) => {
   try {
     const result = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        setence: match[1],
+        sentence: match[1],
       })
     ).data.data;
 

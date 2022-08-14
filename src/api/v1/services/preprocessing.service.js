@@ -5,26 +5,26 @@ const tokenizeHelper = require("../helpers/tokenize.helper");
 const DictionaryService = require("./dictionary.service");
 const { perbandingan } = require("../../../../public");
 class PreprocessingService {
-  static async removeSymbol(setenceParam) {
-    return setenceParam.replace(
+  static async removeSymbol(sentenceParam) {
+    return sentenceParam.replace(
       /([\/\\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,
       ""
     );
   }
 
-  static async globalReplace(setenceParam, fromParam, toParam) {
-    return setenceParam.replace(new RegExp(fromParam, "gi"), toParam);
+  static async globalReplace(sentenceParam, fromParam, toParam) {
+    return sentenceParam.replace(new RegExp(fromParam, "gi"), toParam);
   }
 
-  static async stopwordFilter(setenceParam) {
+  static async stopwordFilter(sentenceParam) {
     const stopwordDictionary = await DictionaryService.getStopwordList();
-    return setenceParam.filter((element) => {
+    return sentenceParam.filter((element) => {
       return !stopwordDictionary.includes(element) && element !== "";
     });
   }
 
-  static async synonymHandler(setenceParam) {
-    let result = setenceParam;
+  static async synonymHandler(sentenceParam) {
+    let result = sentenceParam;
     const synonymDictionary = await DictionaryService.getSynonymList();
     Object.keys(synonymDictionary).forEach((element) => {
       result = result.replace(
@@ -36,8 +36,8 @@ class PreprocessingService {
     return result;
   }
 
-  static async columnHandler(setenceParam) {
-    let result = setenceParam;
+  static async columnHandler(sentenceParam) {
+    let result = sentenceParam;
     const columnNameHandlerDictionary =
       await DictionaryService.getColumnNameHandlerList();
 
@@ -51,8 +51,8 @@ class PreprocessingService {
     return result;
   }
 
-  static async tableHandler(setenceParam) {
-    let result = setenceParam;
+  static async tableHandler(sentenceParam) {
+    let result = sentenceParam;
     const tableNameHandlerDictionary =
       await DictionaryService.getTableNameHandlerList();
     Object.keys(tableNameHandlerDictionary).forEach((element) => {
@@ -64,8 +64,8 @@ class PreprocessingService {
     return result;
   }
 
-  static async stemmer(setenceParam) {
-    const token = await tokenizeHelper(setenceParam);
+  static async stemmer(sentenceParam) {
+    const token = await tokenizeHelper(sentenceParam);
     const stemmer = new sastrawijs.Stemmer(
       await DictionaryService.getStemmerCustomList()
     );
@@ -86,8 +86,8 @@ class PreprocessingService {
     return result;
   }
 
-  static async conjunctionHandler(setenceParam) {
-    let result = setenceParam;
+  static async conjunctionHandler(sentenceParam) {
+    let result = sentenceParam;
     result = await this.globalReplace(result, "&", "dan");
     result = await this.globalReplace(result, "/", "atau");
     result = await this.globalReplace(result, ",", " ,");
@@ -95,30 +95,30 @@ class PreprocessingService {
     return result;
   }
 
-  static async comparisonOperatorToSymbol(setenceParam) {
-    let result = setenceParam;
+  static async comparisonOperatorToSymbol(sentenceParam) {
+    let result = sentenceParam;
     for (const key in perbandingan) {
       result = await this.globalReplace(result, key, perbandingan[key]);
     }
     return result;
   }
 
-  static async run(setenceParam) {
-    let setence = setenceParam.toLowerCase();
+  static async run(sentenceParam) {
+    let sentence = sentenceParam.toLowerCase();
 
-    setence = await this.conjunctionHandler(setence);
-    setence = await this.removeSymbol(setence);
-    setence = await this.synonymHandler(setence);
+    sentence = await this.conjunctionHandler(sentence);
+    sentence = await this.removeSymbol(sentence);
+    sentence = await this.synonymHandler(sentence);
 
-    let stemming = await this.stemmer(setence);
+    let stemming = await this.stemmer(sentence);
     stemming = await this.stopwordFilter(stemming);
 
-    setence = await sentenizeHelper(stemming);
-    setence = await this.comparisonOperatorToSymbol(setence);
-    setence = await this.columnHandler(setence);
-    setence = await this.tableHandler(setence);
+    sentence = await sentenizeHelper(stemming);
+    sentence = await this.comparisonOperatorToSymbol(sentence);
+    sentence = await this.columnHandler(sentence);
+    sentence = await this.tableHandler(sentence);
 
-    let result = await tokenizeHelper(setence);
+    let result = await tokenizeHelper(sentence);
 
     return result;
   }
