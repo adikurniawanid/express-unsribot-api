@@ -2,7 +2,7 @@
 const { PreprocessingService } = require("../services");
 
 class PreprocessingController {
-  static async run(req, res, next) {
+  static async preprocess(req, res, next) {
     try {
       res.status(200).json({
         data: await PreprocessingService.run(req.body.sentence),

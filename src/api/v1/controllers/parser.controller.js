@@ -1,8 +1,8 @@
 "use strict";
 const { PreprocessingService, ParserService } = require("../services");
 
-class PreprocessingController {
-  static async run(req, res, next) {
+class ParserController {
+  static async parse(req, res, next) {
     try {
       res.status(200).json({
         data: await ParserService.run(
@@ -15,4 +15,4 @@ class PreprocessingController {
   }
 }
 
-module.exports = PreprocessingController;
+module.exports = ParserController;

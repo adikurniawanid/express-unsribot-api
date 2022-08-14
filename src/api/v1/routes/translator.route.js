@@ -10,7 +10,7 @@ router.post(
   "/",
   translatorValidationRules(),
   validation,
-  TranslatorController.run
+  TranslatorController.translate
 );
 
 module.exports = router;

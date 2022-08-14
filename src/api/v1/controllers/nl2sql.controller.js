@@ -7,7 +7,7 @@ const {
 } = require("../services");
 
 class Nl2sqlController {
-  static async run(req, res, next) {
+  static async nl2sql(req, res, next) {
     try {
       const preprocessing = await PreprocessingService.run(req.body.sentence);
       const parser = await ParserService.run(preprocessing);

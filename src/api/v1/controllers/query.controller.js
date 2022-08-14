@@ -7,7 +7,7 @@ const {
 } = require("../services");
 
 class QueryController {
-  static async run(req, res, next) {
+  static async query(req, res, next) {
     try {
       res.status(200).json({
         data: await querySequelizeHelper(

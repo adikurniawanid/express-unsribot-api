@@ -10,7 +10,7 @@ router.post(
   "/",
   preprocessingValidationRules(),
   validation,
-  PreprocessingController.run
+  PreprocessingController.preprocess
 );
 
 module.exports = router;
