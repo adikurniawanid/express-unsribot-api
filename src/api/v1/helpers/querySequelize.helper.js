@@ -8,7 +8,7 @@ module.exports = async (queryParam) => {
     return data;
   } else {
     throw {
-      status: 400,
+      status: 404,
       message: "Data not found",
     };
   }
