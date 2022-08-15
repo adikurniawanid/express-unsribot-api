@@ -1,7 +1,7 @@
 "use strict";
 const { querySequelizeHelper } = require("../helpers");
 const {
-  PreprocessingService,
+  PreprocessorService,
   TranslatorService,
   ParserService,
 } = require("../services");
@@ -9,17 +9,18 @@ const {
 class Nl2sqlController {
   static async nl2sql(req, res, next) {
     try {
-      const preprocessing = await PreprocessingService.run(req.body.sentence);
-      const parser = await ParserService.run(preprocessing);
-      const translator = await TranslatorService.run(parser);
-      const resultQuery = await querySequelizeHelper(translator);
+      const sentence = req.body.sentence;
+      const preprocessing = await PreprocessorService.preprocessor(sentence);
+      const parsing = await ParserService.parsing(preprocessing);
+      const translating = await TranslatorService.translate(parsing);
+      const querying = await querySequelizeHelper(translating);
 
       res.status(200).json({
         data: {
-          preprocessing,
-          parser,
-          translator,
-          resultQuery,
+          preprocess: preprocessing,
+          parse: parsing,
+          translate: translating,
+          query: querying,
         },
       });
     } catch (error) {

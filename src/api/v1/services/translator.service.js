@@ -1,7 +1,7 @@
 "use strict";
 
 class TranslatorService {
-  static async run(parserParam) {
+  static async translate(parserParam) {
     const queryForming = [];
 
     if (parserParam.selectIdentify === true) {
