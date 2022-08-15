@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../src/app");
 
-describe("NL2sql API", () => {
+describe("NL2SQL API", () => {
   it("Success", (done) => {
     request(app)
       .post("/nl2sql")

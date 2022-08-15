@@ -1,7 +1,7 @@
 const request = require("supertest");
 const app = require("../src/app");
 
-describe("Preprocessing API", () => {
+describe("Preprocessor API", () => {
   it("Success", (done) => {
     request(app)
       .post("/preprocessing")

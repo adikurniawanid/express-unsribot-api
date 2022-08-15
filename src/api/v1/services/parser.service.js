@@ -211,7 +211,7 @@ class ParserService {
     return false;
   }
 
-  static async run(tokenParam) {
+  static async parsing(tokenParam) {
     const selectIdentify = await this.identifySelect(tokenParam);
     const tableIdentify = await this.identifyTable(tokenParam);
     const conditionIdentify = await this.identifyWhere(tokenParam);

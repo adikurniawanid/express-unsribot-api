@@ -1,6 +1,6 @@
 "use strict";
 const {
-  PreprocessingService,
+  PreprocessorService,
   TranslatorService,
   ParserService,
 } = require("../services");
@@ -8,12 +8,13 @@ const {
 class TranslatorController {
   static async translate(req, res, next) {
     try {
+      const sentence = req.body.sentence;
+      const preprocessing = await PreprocessorService.preprocessing(sentence);
+      const parsing = await ParserService.parsing(preprocessing);
+      const translating = await TranslatorService.translating(parsing);
+
       res.status(200).json({
-        data: await TranslatorService.run(
-          await ParserService.run(
-            await PreprocessingService.run(req.body.sentence)
-          )
-        ),
+        data: translating,
       });
     } catch (error) {
       next(error);

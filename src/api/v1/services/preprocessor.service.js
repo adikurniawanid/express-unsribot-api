@@ -4,7 +4,7 @@ const sentenizeHelper = require("../helpers/sentenize.helper");
 const tokenizeHelper = require("../helpers/tokenize.helper");
 const DictionaryService = require("./dictionary.service");
 const { perbandingan } = require("../../../../public");
-class PreprocessingService {
+class PreprocessorService {
   static async removeSymbol(sentenceParam) {
     return sentenceParam.replace(
       /([\/\\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,
@@ -103,7 +103,7 @@ class PreprocessingService {
     return result;
   }
 
-  static async run(sentenceParam) {
+  static async preprocessing(sentenceParam) {
     let sentence = sentenceParam.toLowerCase();
 
     sentence = await this.conjunctionHandler(sentence);
@@ -124,4 +124,4 @@ class PreprocessingService {
   }
 }
 
-module.exports = PreprocessingService;
+module.exports = PreprocessorService;

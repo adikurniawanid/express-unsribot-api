@@ -6,7 +6,7 @@ const cookieParser = require("cookie-parser");
 const { errorHandler } = require("./api/v1/middlewares");
 const {
   indexRouter,
-  preprocessingRouter,
+  preprocessorRouter,
   parserRouter,
   translatorRouter,
   queryRouter,
@@ -23,7 +23,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/", indexRouter);
-app.use("/v1/preprocessing", preprocessingRouter);
+app.use("/v1/preprocessor", preprocessorRouter);
 app.use("/v1/parser", parserRouter);
 app.use("/v1/translator", translatorRouter);
 app.use("/v1/query", queryRouter);
