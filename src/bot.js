@@ -6,127 +6,13 @@ const bot = new TelegramBot(telegramBotConfig.TELEGRAM_BOT_TOKEN, {
   polling: true,
 });
 
-bot.onText(/\/pre (.+)/, async (msg, match) => {
+bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
   try {
     const chatId = msg.chat.id;
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/preprocessing", {
-        sentence: match[1],
-      })
-    ).data.data;
+    const opts = {
+      reply_to_message_id: msg.message_id,
+    };
 
-    bot
-      .sendMessage(chatId, JSON.stringify(resp), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/parser (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/parser", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp, null, 2), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/translator (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/translator", {
-        sentence: match[1],
-      })
-    ).data.data;
-    bot
-      .sendMessage(chatId, resp, {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/query (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/query", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp, null, 2), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp, null, 2), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/querySingle (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  const opts = {
-    reply_to_message_id: msg.message_id,
-  };
-
-  try {
     const result = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
         sentence: match[1],
@@ -134,27 +20,29 @@ bot.onText(/\/querySingle (.+)/, async (msg, match) => {
     ).data.data;
 
     const resp = {
-      sql: result.translator,
-      result: result.resultQuery,
+      sql: result.translate,
+      result: result.query,
     };
 
-    await bot.sendMessage(chatId, resp.sql, opts);
+    await bot.sendMessage(chatId, resp.sql);
     await bot.sendMessage(chatId, "Jumlah data : " + resp.result.length, opts);
 
     resp.result.map((element) => {
       bot
         .sendMessage(
           chatId,
-          JSON.stringify(element, null, 1).replace(/[{}]/g, ""),
-          opts
+          JSON.stringify(element, null, 1).replace(/[{}]/g, "")
         )
         .catch((e) =>
           bot.sendMessage(chatId, "Bad Request: reply message is too long")
         );
     });
   } catch (error) {
+    console.log(error);
     if (error.response.data.message) {
       bot.sendMessage(chatId, error.response.data.message);
+    } else {
+      bot.sendMessage(chatId, error);
     }
   }
 });
