@@ -4,7 +4,7 @@ const app = require("../src/app");
 describe("Query API", () => {
   it("Success", (done) => {
     request(app)
-      .post("/query")
+      .post("/v1/query")
       .send({
         sentence:
           "temukan nama mahasiswa dengan nim diatas 0902 dan angkatan lebih kecil sama dengan 2018",
@@ -22,7 +22,7 @@ describe("Query API", () => {
 
   it("Unprocessable Entity", (done) => {
     request(app)
-      .post("/query")
+      .post("/v1/query")
       .end((err, res) => {
         if (err) {
           done(err);
@@ -36,7 +36,7 @@ describe("Query API", () => {
 
   it("Select Not Found", (done) => {
     request(app)
-      .post("/query")
+      .post("/v1/query")
       .send({
         sentence: "mahasiswa dengan nim diatas 0902 dan angkatan dibawah 2018",
       })
@@ -54,7 +54,7 @@ describe("Query API", () => {
 
   it("Table Not Found", (done) => {
     request(app)
-      .post("/query")
+      .post("/v1/query")
       .send({
         sentence: "Temukan adi",
       })
@@ -72,7 +72,7 @@ describe("Query API", () => {
 
   it("Data Not Found", (done) => {
     request(app)
-      .post("/query")
+      .post("/v1/query")
       .send({
         sentence: "Temukan nama mahasiswa dengan nama ZZZZZZZZZZZZZ",
       })

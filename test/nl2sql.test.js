@@ -4,7 +4,7 @@ const app = require("../src/app");
 describe("NL2SQL API", () => {
   it("Success", (done) => {
     request(app)
-      .post("/nl2sql")
+      .post("/v1/nl2sql")
       .send({
         sentence: "temukan nama mahasiswa dengan nama mengandung kata adi",
       })
@@ -21,7 +21,7 @@ describe("NL2SQL API", () => {
 
   it("Unprocessable Entity", (done) => {
     request(app)
-      .post("/nl2sql")
+      .post("/v1/nl2sql")
       .end((err, res) => {
         if (err) {
           done(err);
@@ -35,7 +35,7 @@ describe("NL2SQL API", () => {
 
   it("Select Not Found", (done) => {
     request(app)
-      .post("/nl2sql")
+      .post("/v1/nl2sql")
       .send({
         sentence: "mahasiswa dengan nim diatas 0902 dan angkatan dibawah 2018",
       })
@@ -53,7 +53,7 @@ describe("NL2SQL API", () => {
 
   it("Table Not Found", (done) => {
     request(app)
-      .post("/nl2sql")
+      .post("/v1/nl2sql")
       .send({
         sentence: "Temukan adi",
       })
