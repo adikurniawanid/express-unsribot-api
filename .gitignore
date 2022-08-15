@@ -1,4 +1,5 @@
 .env
+public/seederData
 
 # Logs
 logs
