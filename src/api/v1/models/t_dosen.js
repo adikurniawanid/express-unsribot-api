@@ -6,10 +6,22 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_dosen.init(
     {
-      nip: DataTypes.STRING,
-      nama: DataTypes.STRING,
-      jurusanId: DataTypes.INTEGER,
-      jenisKelaminId: DataTypes.INTEGER,
+      nip: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      nama: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      jurusanId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      jenisKelaminId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,

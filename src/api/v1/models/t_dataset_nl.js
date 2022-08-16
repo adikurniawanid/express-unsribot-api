@@ -6,8 +6,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_dataset_nl.init(
     {
-      nl: DataTypes.STRING,
-      guestName: DataTypes.STRING,
+      nl: {
+        allowNull: false,
+        Data: DataTypes.STRING,
+      },
+      guestName: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

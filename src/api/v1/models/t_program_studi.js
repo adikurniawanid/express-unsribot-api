@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_program_studi.init(
     {
-      nama: DataTypes.STRING,
+      nama: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

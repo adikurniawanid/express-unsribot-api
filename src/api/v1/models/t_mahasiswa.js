@@ -6,14 +6,38 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_mahasiswa.init(
     {
-      nim: DataTypes.STRING,
-      nama: DataTypes.STRING,
-      angkatan: DataTypes.STRING,
-      jurusanId: DataTypes.INTEGER,
-      jenisKelaminId: DataTypes.INTEGER,
-      dosenPaId: DataTypes.INTEGER,
-      programStudiId: DataTypes.INTEGER,
-      ipk: DataTypes.DOUBLE,
+      nim: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      nama: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      angkatan: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      ipk: {
+        allowNull: false,
+        type: DataTypes.DOUBLE,
+      },
+      jurusanId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      jenisKelaminId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      dosenPaId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      programStudiId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,

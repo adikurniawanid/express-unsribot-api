@@ -9,12 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       kode: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       nama: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       fakultasId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_fakultas",

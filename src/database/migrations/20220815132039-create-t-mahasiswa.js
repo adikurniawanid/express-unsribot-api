@@ -9,18 +9,23 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       nim: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       nama: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       angkatan: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       ipk: {
+        allowNull: false,
         type: Sequelize.DOUBLE,
       },
       jurusanId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_jurusan",
@@ -28,6 +33,7 @@ module.exports = {
         },
       },
       jenisKelaminId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_detail_jenis_kelamin",
@@ -35,6 +41,7 @@ module.exports = {
         },
       },
       dosenPaId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_dosen",
@@ -42,6 +49,7 @@ module.exports = {
         },
       },
       programStudiId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_program_studi",

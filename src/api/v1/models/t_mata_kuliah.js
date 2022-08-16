@@ -6,11 +6,26 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_mata_kuliah.init(
     {
-      kode: DataTypes.STRING,
-      nama: DataTypes.STRING,
-      semester: DataTypes.INTEGER,
-      sks: DataTypes.INTEGER,
-      jurusanId: DataTypes.INTEGER,
+      kode: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      nama: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      semester: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      sks: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
+      jurusanId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,
