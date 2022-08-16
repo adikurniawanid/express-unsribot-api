@@ -7,12 +7,12 @@ const bot = new TelegramBot(telegramBotConfig.TELEGRAM_BOT_TOKEN, {
 });
 
 bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
-  try {
-    const chatId = msg.chat.id;
-    const opts = {
-      reply_to_message_id: msg.message_id,
-    };
+  const chatId = msg.chat.id;
+  const opts = {
+    reply_to_message_id: msg.message_id,
+  };
 
+  try {
     const result = (
       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
         sentence: match[1],
