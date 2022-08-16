@@ -24,8 +24,8 @@ bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
       result: result.query,
     };
 
-    await bot.sendMessage(chatId, resp.sql);
-    await bot.sendMessage(chatId, "Jumlah data : " + resp.result.length, opts);
+    await bot.sendMessage(chatId, resp.sql, opts);
+    await bot.sendMessage(chatId, "Jumlah data : " + resp.result.length);
 
     resp.result.map((element) => {
       bot
