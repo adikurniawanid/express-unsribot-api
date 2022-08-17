@@ -1,6 +1,12 @@
 {
     "perempuan":"wanita",
-    "laki-laki":"pria",
     "laki laki":"pria",
-    "lelaki":"pria"
+    "lakilaki":"pria",
+    "lelaki":"pria",
+    "usept":"suliet",
+    "mk":"mata_kuliah",
+    "nomor induk mahasiswa": "nim",
+    "nomor induk pegawai": "nip",
+    "satuan kredit semester": "sks",
+    "indeks prestasi kumulatif": "ipk"
 }

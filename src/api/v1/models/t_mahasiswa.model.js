@@ -18,6 +18,10 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         type: DataTypes.STRING,
       },
+      suliet: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
       ipk: {
         allowNull: false,
         type: DataTypes.DOUBLE,

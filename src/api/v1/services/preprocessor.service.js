@@ -7,7 +7,7 @@ const { perbandingan } = require("../../../../public");
 class PreprocessorService {
   static async removeSymbol(sentenceParam) {
     return sentenceParam.replace(
-      /([\/\\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\<\>\-\&])/g,
+      /([\/\\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\-\&])/g,
       ""
     );
   }

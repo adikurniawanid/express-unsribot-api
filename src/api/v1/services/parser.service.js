@@ -125,8 +125,9 @@ class ParserService {
                   tokenParam[index] +
                   " " +
                   tokenParam[index + 1] +
-                  " " +
-                  tokenParam[index + 2]
+                  ' "' +
+                  tokenParam[index + 2] +
+                  '"'
               );
               index += 2;
             } else {

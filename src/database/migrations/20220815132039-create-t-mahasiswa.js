@@ -20,6 +20,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
+      suliet: {
+        allowNull: false,
+        type: Sequelize.INTEGER,
+      },
       ipk: {
         allowNull: false,
         type: Sequelize.DOUBLE,
