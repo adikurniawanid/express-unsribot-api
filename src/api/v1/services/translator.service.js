@@ -4,9 +4,9 @@ class TranslatorService {
   static async translating(parserParam) {
     const queryForming = [];
 
-    if (parserParam.selectIdentify === true) {
+    if (parserParam.selectIdentify) {
       queryForming.push("SELECT");
-      if (parserParam.distinctIdentify === true) {
+      if (parserParam.distinctIdentify) {
         queryForming.push("DISTINCT");
       }
     } else {
@@ -16,13 +16,21 @@ class TranslatorService {
       };
     }
 
-    if (parserParam.columnIdentify.length > 0) {
-      queryForming.push(parserParam.columnIdentify.join(", "));
+    if (parserParam.columnIdentify === "default") {
+      queryForming.push("*");
+    } else {
+      const queryFormingColumn = [];
+      for (let index = 0; index < parserParam.columnIdentify.length; index++) {
+        queryFormingColumn.push(
+          `${parserParam.columnIdentify[index].view}.${parserParam.columnIdentify[index].column}`
+        );
+      }
+      queryForming.push(queryFormingColumn.join(", "));
     }
 
-    if (parserParam.tableIdentify.length > 0) {
+    if (parserParam.viewIdentify.length > 0) {
       queryForming.push("FROM");
-      queryForming.push(parserParam.tableIdentify.join(", "));
+      queryForming.push(parserParam.viewIdentify.join(", "));
     } else {
       throw {
         status: 404,
@@ -32,30 +40,117 @@ class TranslatorService {
 
     if (
       parserParam.conditionIdentify.length > 0 &&
-      parserParam.columnConditionIdentify.length > 0
+      parserParam.columnConditionIdentify.length > 0 &&
+      parserParam.columnConditionIdentify[0].conditionValue
     ) {
       queryForming.push("WHERE");
-      queryFormConditionLoop: for (
+
+      for (
         let index = 0;
         index < parserParam.columnConditionIdentify.length;
         index++
       ) {
-        queryForming.push(parserParam.columnConditionIdentify[index]);
-        if (parserParam.columnConditionIdentify[index + 1] !== undefined) {
-          parserParam.logicOperatorIdentify[index]
-            ? queryForming.push(parserParam.logicOperatorIdentify[index])
-            : queryForming.push("AND");
+        if (
+          parserParam.columnConditionIdentify[index].conditionValue !==
+          undefined
+        ) {
+          if (
+            parserParam.columnConditionIdentify[index].operator === "kandung"
+          ) {
+            queryForming.push(
+              parserParam.columnConditionIdentify[index].view +
+                "." +
+                parserParam.columnConditionIdentify[index].column +
+                " LIKE " +
+                '"%' +
+                parserParam.columnConditionIdentify[index].conditionValue +
+                '%"'
+            );
+          } else if (
+            parserParam.columnConditionIdentify[index].operator === "awal"
+          ) {
+            queryForming.push(
+              parserParam.columnConditionIdentify[index].view +
+                "." +
+                parserParam.columnConditionIdentify[index].column +
+                ' LIKE "' +
+                parserParam.columnConditionIdentify[index].conditionValue +
+                '%"'
+            );
+          } else if (
+            parserParam.columnConditionIdentify[index].operator === "akhir"
+          ) {
+            queryForming.push(
+              parserParam.columnConditionIdentify[index].view +
+                "." +
+                parserParam.columnConditionIdentify[index].column +
+                ' LIKE "%' +
+                parserParam.columnConditionIdentify[index].conditionValue +
+                '"'
+            );
+          } else if (
+            [">=", ">", "<=", "<", "=", "!="].includes(
+              parserParam.columnConditionIdentify[index].operator
+            )
+          ) {
+            queryForming.push(
+              `${parserParam.columnConditionIdentify[index].view}.${parserParam.columnConditionIdentify[index].column} ${parserParam.columnConditionIdentify[index].operator} "${parserParam.columnConditionIdentify[index].conditionValue}"`
+            );
+          } else if (
+            parserParam.columnConditionIdentify[index].operator === "default"
+          ) {
+            queryForming.push(
+              parserParam.columnConditionIdentify[index].view +
+                "." +
+                parserParam.columnConditionIdentify[index].column +
+                ' = "' +
+                parserParam.columnConditionIdentify[index].conditionValue +
+                '"'
+            );
+          }
+
+          if (parserParam.columnConditionIdentify[index + 1] !== undefined) {
+            switch (parserParam.logicOperatorIdentify[index]) {
+              case "dan":
+                queryForming.push("AND");
+                break;
+              case "atau":
+                queryForming.push("OR");
+                break;
+              default:
+                queryForming.push("AND");
+                break;
+            }
+          }
         }
       }
     }
 
     if (parserParam.orderIdentify.length > 0) {
       queryForming.push("ORDER BY");
-      queryForming.push(parserParam.orderIdentify.join(", "));
+
+      let queryFormingOrder = [];
+
+      for (let index = 0; index < parserParam.orderIdentify.length; index++) {
+        if (
+          ["turun", "rendah"].includes(
+            parserParam.orderIdentify[index].sortDirection
+          )
+        ) {
+          queryFormingOrder.push(
+            `${parserParam.orderIdentify[index].view}.${parserParam.orderIdentify[index].column} DESC`
+          );
+        } else {
+          queryFormingOrder.push(
+            `${parserParam.orderIdentify[index].view}.${parserParam.orderIdentify[index].column} ASC`
+          );
+        }
+      }
+      queryForming.push(queryFormingOrder.join(", "));
     }
 
-    if (parserParam.limitIdentify.length) {
-      queryForming.push(parserParam.limitIdentify);
+    if (parserParam.limitIdentify) {
+      queryForming.push(`LIMIT ${parserParam.limitIdentify.amount}`);
     }
 
     const translate = queryForming.join(" ");
