@@ -20,13 +20,13 @@ class TranslatorService {
       queryForming.push(parserParam.columnIdentify.join(", "));
     }
 
-    if (parserParam.tableIdentify.length > 0) {
+    if (parserParam.viewIdentify.length > 0) {
       queryForming.push("FROM");
-      queryForming.push(parserParam.tableIdentify.join(", "));
+      queryForming.push(parserParam.viewIdentify.join(", "));
     } else {
       throw {
         status: 404,
-        message: "Table not found",
+        message: "View not found",
       };
     }
 

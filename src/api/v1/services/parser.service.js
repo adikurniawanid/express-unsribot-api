@@ -13,12 +13,12 @@ class ParserService {
     return false;
   }
 
-  static async identifyTable(tokenParam) {
+  static async identifyView(tokenParam) {
     const result = new Set();
-    const tableDictionary = await DictionaryService.getTableList();
+    const viewDictionary = await DictionaryService.getViewList();
 
     for (let index = 0; index < tokenParam.length; index++) {
-      if (tableDictionary.includes(tokenParam[index])) {
+      if (viewDictionary.includes(tokenParam[index])) {
         result.add(tokenParam[index]);
       }
     }
@@ -59,7 +59,7 @@ class ParserService {
 
   static async identifyColumn(
     tokenParam,
-    identifyTableParam,
+    identifyViewParam,
     identifyWhereParam
   ) {
     let column = [];
@@ -67,7 +67,7 @@ class ParserService {
     let conditionStatus = false;
     let orderStatus = false;
     const objectIdentifyColumn =
-      await DictionaryService.getObjectColumnListByTable(identifyTableParam);
+      await DictionaryService.getObjectColumnListByView(identifyViewParam);
 
     for (let index = 0; index < tokenParam.length; index++) {
       if (tokenParam[index] === identifyWhereParam) {
@@ -160,9 +160,9 @@ class ParserService {
     return [column, columnCondition];
   }
 
-  static async identifyOrder(tokenParam, identifyTableParam) {
+  static async identifyOrder(tokenParam, identifyViewParam) {
     const objectIdentifyColumn =
-      await DictionaryService.getObjectColumnListByTable(identifyTableParam);
+      await DictionaryService.getObjectColumnListByView(identifyViewParam);
     const result = [];
 
     orderLoop: for (
@@ -214,7 +214,7 @@ class ParserService {
 
   static async parsing(tokenParam) {
     const selectIdentify = await this.identifySelect(tokenParam);
-    const tableIdentify = await this.identifyTable(tokenParam);
+    const viewIdentify = await this.identifyView(tokenParam);
     const conditionIdentify = await this.identifyWhere(tokenParam);
     const logicOperatorIdentify = await this.identifyLogicOperator(
       tokenParam,
@@ -224,18 +224,18 @@ class ParserService {
     const [columnIdentify, columnConditionIdentify] =
       await ParserService.identifyColumn(
         tokenParam,
-        tableIdentify,
+        viewIdentify,
         conditionIdentify
       );
 
-    const orderIdentify = await this.identifyOrder(tokenParam, tableIdentify);
+    const orderIdentify = await this.identifyOrder(tokenParam, viewIdentify);
     const limitIdentify = await this.identifyLimit(tokenParam);
     const distinctIdentify = await this.identifyDistinct(tokenParam);
 
     return {
       selectIdentify,
       columnIdentify,
-      tableIdentify,
+      viewIdentify,
       conditionIdentify,
       columnConditionIdentify,
       logicOperatorIdentify,

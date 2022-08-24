@@ -50,14 +50,14 @@ class PreprocessorService {
     return result;
   }
 
-  static async tableHandler(sentenceParam) {
+  static async viewHandler(sentenceParam) {
     let result = sentenceParam;
-    const tableNameHandlerDictionary =
+    const viewNameHandlerDictionary =
       await DictionaryService.getViewNameHandlerList();
-    Object.keys(tableNameHandlerDictionary).forEach((element) => {
+    Object.keys(viewNameHandlerDictionary).forEach((element) => {
       result = result.replace(
         new RegExp(element, "gi"),
-        tableNameHandlerDictionary[element]
+        viewNameHandlerDictionary[element]
       );
     });
     return result;
@@ -68,14 +68,14 @@ class PreprocessorService {
     const stemmer = new sastrawijs.Stemmer(
       await DictionaryService.getStemmerCustomList()
     );
-    const tableList = await DictionaryService.getViewList();
+    const viewList = await DictionaryService.getViewList();
     const columnList = await DictionaryService.getColumnList();
     let result = [];
 
     token.forEach((element) => {
       if (columnList.includes(element)) {
         result.push(element);
-      } else if (tableList.includes(element)) {
+      } else if (viewList.includes(element)) {
         result.push(element);
       } else {
         result.push(stemmer.stem(element));
@@ -116,7 +116,7 @@ class PreprocessorService {
     sentence = await sentenizeHelper(stemming);
     sentence = await this.comparisonOperatorToSymbol(sentence);
     sentence = await this.columnHandler(sentence);
-    sentence = await this.tableHandler(sentence);
+    sentence = await this.viewHandler(sentence);
 
     let preprocess = await tokenizeHelper(sentence);
 
