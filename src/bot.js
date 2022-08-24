@@ -1,6 +1,7 @@
 const telegramBotConfig = require("../src/config/telegramBot.config");
 const TelegramBot = require("node-telegram-bot-api");
 const { default: axios } = require("axios");
+const XLSX = require("xlsx");
 
 const bot = new TelegramBot(telegramBotConfig.TELEGRAM_BOT_TOKEN, {
   polling: true,
@@ -24,27 +25,26 @@ bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
       result: result.query,
     };
 
+    const workSheet = XLSX.utils.json_to_sheet(resp.result);
+    const workBook = XLSX.utils.book_new();
+
+    XLSX.utils.book_append_sheet(workBook, workSheet);
+
+    XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+
+    XLSX.writeFile(workBook, "data.xlsx");
+
     await bot.sendMessage(chatId, resp.sql, opts);
-    await bot.sendMessage(chatId, "Jumlah data : " + resp.result.length);
 
     if (resp.result.length > 0) {
-      resp.result.map(async (element) => {
-        await bot
-          .sendMessage(
-            chatId,
-            JSON.stringify(element, null, 1).replace(/[{}]/g, "")
-          )
-          .catch((e) =>
-            bot.sendMessage(chatId, "Bad Request: reply message is too long")
-          );
-      });
+      await bot.sendDocument(chatId, "data.xlsx");
     } else {
       bot.sendMessage(chatId, "Data not found");
     }
   } catch (error) {
     console.log(error);
     if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
+      bot.sendMessage(chatId, error.response.data.message, opts);
     } else {
       bot.sendMessage(chatId, error);
     }
