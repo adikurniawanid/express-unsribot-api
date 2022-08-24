@@ -3,7 +3,6 @@ const sastrawijs = require("sastrawijs");
 const sentenizeHelper = require("../helpers/sentenize.helper");
 const tokenizeHelper = require("../helpers/tokenize.helper");
 const DictionaryService = require("./dictionary.service");
-const { perbandingan } = require("../../../../public");
 class PreprocessorService {
   static async removeSymbol(sentenceParam) {
     return sentenceParam.replace(
@@ -54,7 +53,7 @@ class PreprocessorService {
   static async tableHandler(sentenceParam) {
     let result = sentenceParam;
     const tableNameHandlerDictionary =
-      await DictionaryService.getTableNameHandlerList();
+      await DictionaryService.getViewNameHandlerList();
     Object.keys(tableNameHandlerDictionary).forEach((element) => {
       result = result.replace(
         new RegExp(element, "gi"),
@@ -69,7 +68,7 @@ class PreprocessorService {
     const stemmer = new sastrawijs.Stemmer(
       await DictionaryService.getStemmerCustomList()
     );
-    const tableList = await DictionaryService.getTableList();
+    const tableList = await DictionaryService.getViewList();
     const columnList = await DictionaryService.getColumnList();
     let result = [];
 
@@ -97,6 +96,7 @@ class PreprocessorService {
 
   static async comparisonOperatorToSymbol(sentenceParam) {
     let result = sentenceParam;
+    const perbandingan = await DictionaryService.getPerbandingan();
     for (const key in perbandingan) {
       result = await this.globalReplace(result, key, perbandingan[key]);
     }

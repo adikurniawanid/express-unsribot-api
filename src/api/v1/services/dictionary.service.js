@@ -1,18 +1,10 @@
 "use strict";
 const { sequelize } = require("../models");
-const {
-  kondisi,
-  kataPerintah,
-  sinonim,
-  stopword,
-  penangananNamaKolom,
-  penangananNamaTabel,
-  stemmer,
-} = require("../../../../public");
 const sequelizeConfig = require("../../../config/sequelize.config");
+const wordlist = require("../../../wordlist/wordlist.json");
 
 class DictionaryService {
-  static async getTableList() {
+  static async getViewList() {
     const [data, metadata] = await sequelize.query(
       `SELECT TABLE_NAME FROM information_schema.\`TABLES\` WHERE TABLE_TYPE LIKE 'VIEW' AND TABLE_SCHEMA LIKE '${sequelizeConfig.development.database}'`
     );
@@ -40,9 +32,9 @@ class DictionaryService {
     return result;
   }
 
-  static async getColumnListByTable(tableParam) {
+  static async getColumnListByView(viewParam) {
     const [data, metadata] = await sequelize.query(
-      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${tableParam}' AND table_schema='${sequelizeConfig.development.database}'`
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${viewParam}' AND table_schema='${sequelizeConfig.development.database}'`
     );
 
     let result = [];
@@ -54,35 +46,39 @@ class DictionaryService {
     return result;
   }
 
+  static async getPerbandingan() {
+    return wordlist.perbandingan;
+  }
+
   static async getConditionList() {
-    return kondisi;
+    return wordlist.kondisi;
   }
 
   static async getSelectList() {
-    return kataPerintah;
+    return wordlist.perintah;
   }
 
   static async getSynonymList() {
-    return sinonim;
+    return wordlist.sinonim;
   }
 
   static async getStopwordList() {
-    return stopword;
+    return wordlist.stopword;
   }
 
   static async getColumnNameHandlerList() {
-    return penangananNamaKolom;
+    return wordlist.kolom;
   }
 
-  static async getTableNameHandlerList() {
-    return penangananNamaTabel;
+  static async getViewNameHandlerList() {
+    return wordlist.view;
   }
 
-  static async getObjectColumnListByTable(arrayTableParam) {
+  static async getObjectColumnListByView(arrayViewParam) {
     const result = {};
-    for (let index = 0; index < arrayTableParam.length; index++) {
-      result[arrayTableParam[index]] = await this.getColumnListByTable(
-        arrayTableParam[index]
+    for (let index = 0; index < arrayViewParam.length; index++) {
+      result[arrayViewParam[index]] = await this.getColumnListByView(
+        arrayViewParam[index]
       );
     }
 
@@ -90,7 +86,7 @@ class DictionaryService {
   }
 
   static async getStemmerCustomList() {
-    return stemmer;
+    return wordlist.stemmer;
   }
 }
 
