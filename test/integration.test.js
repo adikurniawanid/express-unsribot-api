@@ -59,7 +59,7 @@ describe("NL2sql API", () => {
       .post("/v1/nl2sql")
       .send({
         sentence:
-          "temukan mahasiswa dosen dengan nama berawalan kata adi dan angktan 2018 atau angkatan lebih besar sama dengan 2018",
+          "temukan mahasiswa dosen dengan nama berawalan kata adi dan angkatan 2018 atau angkatan lebih besar sama dengan 2018",
       })
       .end((err, res) => {
         if (err) {

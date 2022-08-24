@@ -58,9 +58,9 @@ class TranslatorService {
       queryForming.push(parserParam.limitIdentify);
     }
 
-    const query = queryForming.join(" ");
+    const translate = queryForming.join(" ");
 
-    return query;
+    return translate;
   }
 }
 

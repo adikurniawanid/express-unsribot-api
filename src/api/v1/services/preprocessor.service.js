@@ -118,9 +118,9 @@ class PreprocessorService {
     sentence = await this.columnHandler(sentence);
     sentence = await this.tableHandler(sentence);
 
-    let result = await tokenizeHelper(sentence);
+    let preprocess = await tokenizeHelper(sentence);
 
-    return result;
+    return preprocess;
   }
 }
 
