@@ -1,13 +1,18 @@
 "use strict";
 const sastrawijs = require("sastrawijs");
+const { querySequelizeHelper } = require("../helpers");
 const sentenizeHelper = require("../helpers/sentenize.helper");
 const tokenizeHelper = require("../helpers/tokenize.helper");
 const DictionaryService = require("./dictionary.service");
 class PreprocessorService {
-  static async removeSymbol(sentenceParam) {
+  static async caseFolding(sentenceParam) {
+    return sentenceParam.toLowerCase();
+  }
+
+  static async symbolRemoval(sentenceParam) {
     return sentenceParam.replace(
-      /([\/\\!\\\^\$\{\}\[\]\(\)\.\*\+\?\|\-\&])/g,
-      ""
+      /([\~\!\\\^\$\{\}\[\]\(\)\*\+\?\|\-\,\%\"\'])/g,
+      " "
     );
   }
 
@@ -15,16 +20,20 @@ class PreprocessorService {
     return sentenceParam.replace(new RegExp(fromParam, "gi"), toParam);
   }
 
-  static async stopwordFilter(sentenceParam) {
+  static async stopwordRemoval(sentenceParam) {
     const stopwordDictionary = await DictionaryService.getStopwordList();
-    return sentenceParam.filter((element) => {
-      return !stopwordDictionary.includes(element) && element !== "";
-    });
+    const setence = await tokenizeHelper(sentenceParam);
+    return await sentenizeHelper(
+      setence.filter((element) => {
+        return !stopwordDictionary.includes(element) && element !== "";
+      })
+    );
   }
 
-  static async synonymHandler(sentenceParam) {
+  static async wordConversion(sentenceParam) {
     let result = sentenceParam;
     const synonymDictionary = await DictionaryService.getSynonymList();
+
     Object.keys(synonymDictionary).forEach((element) => {
       result = result.replace(
         new RegExp(element, "gi"),
@@ -35,35 +44,7 @@ class PreprocessorService {
     return result;
   }
 
-  static async columnHandler(sentenceParam) {
-    let result = sentenceParam;
-    const columnNameHandlerDictionary =
-      await DictionaryService.getColumnNameHandlerList();
-
-    Object.keys(columnNameHandlerDictionary).forEach((element) => {
-      result = result.replace(
-        new RegExp(element, "gi"),
-        columnNameHandlerDictionary[element]
-      );
-    });
-
-    return result;
-  }
-
-  static async tableHandler(sentenceParam) {
-    let result = sentenceParam;
-    const tableNameHandlerDictionary =
-      await DictionaryService.getViewNameHandlerList();
-    Object.keys(tableNameHandlerDictionary).forEach((element) => {
-      result = result.replace(
-        new RegExp(element, "gi"),
-        tableNameHandlerDictionary[element]
-      );
-    });
-    return result;
-  }
-
-  static async stemmer(sentenceParam) {
+  static async stemming(sentenceParam) {
     const token = await tokenizeHelper(sentenceParam);
     const stemmer = new sastrawijs.Stemmer(
       await DictionaryService.getStemmerCustomList()
@@ -82,45 +63,19 @@ class PreprocessorService {
       }
     });
 
-    return result;
-  }
-
-  static async conjunctionHandler(sentenceParam) {
-    let result = sentenceParam;
-    result = await this.globalReplace(result, "&", "dan");
-    result = await this.globalReplace(result, "/", "atau");
-    result = await this.globalReplace(result, ",", " ,");
-
-    return result;
-  }
-
-  static async comparisonOperatorToSymbol(sentenceParam) {
-    let result = sentenceParam;
-    const perbandingan = await DictionaryService.getPerbandingan();
-    for (const key in perbandingan) {
-      result = await this.globalReplace(result, key, perbandingan[key]);
-    }
-    return result;
+    return await sentenizeHelper(result);
   }
 
   static async preprocessing(sentenceParam) {
-    let sentence = sentenceParam.toLowerCase();
+    const preprocess = await this.wordConversion(
+      await this.stopwordRemoval(
+        await this.stemming(
+          await this.symbolRemoval(await this.caseFolding(sentenceParam))
+        )
+      )
+    );
 
-    sentence = await this.conjunctionHandler(sentence);
-    sentence = await this.removeSymbol(sentence);
-    sentence = await this.synonymHandler(sentence);
-
-    let stemming = await this.stemmer(sentence);
-    stemming = await this.stopwordFilter(stemming);
-
-    sentence = await sentenizeHelper(stemming);
-    sentence = await this.comparisonOperatorToSymbol(sentence);
-    sentence = await this.columnHandler(sentence);
-    sentence = await this.tableHandler(sentence);
-
-    let preprocess = await tokenizeHelper(sentence);
-
-    return preprocess;
+    return await tokenizeHelper(preprocess);
   }
 }
 
