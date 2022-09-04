@@ -45,7 +45,6 @@ module.exports = {
         },
       },
       dosenPaId: {
-        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_dosen",
