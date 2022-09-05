@@ -35,7 +35,6 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.INTEGER,
       },
       dosenPaId: {
-        allowNull: false,
         type: DataTypes.INTEGER,
       },
       programStudiId: {
