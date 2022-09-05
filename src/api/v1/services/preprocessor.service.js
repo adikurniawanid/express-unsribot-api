@@ -67,15 +67,22 @@ class PreprocessorService {
   }
 
   static async preprocessing(sentenceParam) {
-    const preprocess = await this.wordConversion(
-      await this.stopwordRemoval(
-        await this.stemming(
-          await this.symbolRemoval(await this.caseFolding(sentenceParam))
-        )
-      )
-    );
+    const caseFolding = await this.caseFolding(sentenceParam);
+    const symbolRemoval = await this.symbolRemoval(caseFolding);
+    const stemming = await this.stemming(symbolRemoval);
+    const stopwordRemoval = await this.stopwordRemoval(stemming);
+    const wordConversion = await this.wordConversion(stopwordRemoval);
 
-    return await tokenizeHelper(preprocess);
+    const preprocess = await tokenizeHelper(wordConversion);
+
+    return {
+      caseFolding,
+      symbolRemoval,
+      stemming,
+      stopwordRemoval,
+      wordConversion,
+      token: preprocess,
+    };
   }
 }
 
