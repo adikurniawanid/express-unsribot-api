@@ -32,6 +32,8 @@ class TranslatorService {
       queryForming.push("FROM");
       if (parserParam.viewIdentify.includes("kelas")) {
         queryForming.push("kelas");
+      } else if (parserParam.viewIdentify.includes("khs")) {
+        queryForming.push("khs");
       } else {
         queryForming.push(parserParam.viewIdentify.join(", "));
       }
