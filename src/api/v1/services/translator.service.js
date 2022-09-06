@@ -4,17 +4,17 @@ class TranslatorService {
   static async translating(parserParam) {
     const queryForming = [];
 
-    if (parserParam.selectIdentify) {
-      queryForming.push("SELECT");
-      if (parserParam.distinctIdentify) {
-        queryForming.push("DISTINCT");
-      }
-    } else {
-      throw {
-        status: 404,
-        message: "SELECT not found",
-      };
+    // if (parserParam.selectIdentify) {
+    queryForming.push("SELECT");
+    if (parserParam.distinctIdentify) {
+      queryForming.push("DISTINCT");
     }
+    // } else {
+    // throw {
+    // status: 404,
+    // message: "SELECT not found",
+    // };
+    // }
 
     if (parserParam.columnIdentify === "default") {
       queryForming.push("*");
@@ -30,7 +30,11 @@ class TranslatorService {
 
     if (parserParam.viewIdentify.length > 0) {
       queryForming.push("FROM");
-      queryForming.push(parserParam.viewIdentify.join(", "));
+      if (parserParam.viewIdentify.includes("kelas")) {
+        queryForming.push("kelas");
+      } else {
+        queryForming.push(parserParam.viewIdentify.join(", "));
+      }
     } else {
       throw {
         status: 404,
@@ -103,9 +107,9 @@ class TranslatorService {
               parserParam.columnConditionIdentify[index].view +
                 "." +
                 parserParam.columnConditionIdentify[index].column +
-                ' = "' +
+                ' LIKE "%' +
                 parserParam.columnConditionIdentify[index].conditionValue +
-                '"'
+                '%"'
             );
           }
 
