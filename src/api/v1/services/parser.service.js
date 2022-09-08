@@ -195,14 +195,37 @@ class ParserService {
     return false;
   }
 
+  static async identifyKeyword(tokenParam, viewParam) {
+    return {
+      selectIdentify: await this.identifySelect(tokenParam),
+      distinctIdentify: await this.identifyDistinct(tokenParam),
+      limitIdentify: await this.identifyLimit(tokenParam),
+      orderIdentify: await this.identifyOrder(tokenParam, viewParam),
+    };
+  }
+
+  static async identifyCondition(tokenParam, viewParam) {
+    const conditionIdentify = await this.identifyWhere(tokenParam);
+    const [columnIdentify, columnConditionIdentify] =
+      await ParserService.identifyColumn(
+        tokenParam,
+        viewParam,
+        conditionIdentify
+      );
+
+    return {
+      whereIdentify: conditionIdentify,
+      columnConditionIdentify: columnConditionIdentify,
+      logicOperatorIdentify: await this.identifyLogicOperator(
+        tokenParam,
+        conditionIdentify
+      ),
+    };
+  }
+
   static async parsing(tokenParam) {
-    const selectIdentify = await this.identifySelect(tokenParam);
     const viewIdentify = await this.identifyView(tokenParam);
     const conditionIdentify = await this.identifyWhere(tokenParam);
-    const logicOperatorIdentify = await this.identifyLogicOperator(
-      tokenParam,
-      conditionIdentify
-    );
 
     const [columnIdentify, columnConditionIdentify] =
       await ParserService.identifyColumn(
@@ -211,20 +234,11 @@ class ParserService {
         conditionIdentify
       );
 
-    const orderIdentify = await this.identifyOrder(tokenParam, viewIdentify);
-    const limitIdentify = await this.identifyLimit(tokenParam);
-    const distinctIdentify = await this.identifyDistinct(tokenParam);
-
     return {
-      selectIdentify,
+      keywordIdentify: await this.identifyKeyword(tokenParam, viewIdentify),
       columnIdentify,
       viewIdentify,
-      conditionIdentify,
-      columnConditionIdentify,
-      logicOperatorIdentify,
-      orderIdentify,
-      limitIdentify,
-      distinctIdentify,
+      conditionIdentify: await this.identifyCondition(tokenParam, viewIdentify),
     };
   }
 }

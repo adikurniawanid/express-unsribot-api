@@ -4,9 +4,9 @@ class TranslatorService {
   static async translating(parserParam) {
     const queryForming = [];
 
-    if (parserParam.selectIdentify) {
+    if (parserParam.keywordIdentify.selectIdentify) {
       queryForming.push("SELECT");
-      if (parserParam.distinctIdentify) {
+      if (parserParam.keywordIdentify.distinctIdentify) {
         queryForming.push("DISTINCT");
       }
     } else {
@@ -39,78 +39,99 @@ class TranslatorService {
     }
 
     if (
-      parserParam.conditionIdentify.length > 0 &&
-      parserParam.columnConditionIdentify.length > 0 &&
-      parserParam.columnConditionIdentify[0].conditionValue
+      parserParam.conditionIdentify.columnConditionIdentify.length > 0 &&
+      parserParam.conditionIdentify.columnConditionIdentify[0].conditionValue
     ) {
       queryForming.push("WHERE");
 
       for (
         let index = 0;
-        index < parserParam.columnConditionIdentify.length;
+        index < parserParam.conditionIdentify.columnConditionIdentify.length;
         index++
       ) {
         if (
-          parserParam.columnConditionIdentify[index].conditionValue !==
-          undefined
+          parserParam.conditionIdentify.columnConditionIdentify[index]
+            .conditionValue !== undefined
         ) {
           if (
-            parserParam.columnConditionIdentify[index].operator === "kandung"
+            parserParam.conditionIdentify.columnConditionIdentify[index]
+              .operator === "kandung"
           ) {
             queryForming.push(
-              parserParam.columnConditionIdentify[index].view +
+              parserParam.conditionIdentify.columnConditionIdentify[index]
+                .view +
                 "." +
-                parserParam.columnConditionIdentify[index].column +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .column +
                 " LIKE " +
                 '"%' +
-                parserParam.columnConditionIdentify[index].conditionValue +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .conditionValue +
                 '%"'
             );
           } else if (
-            parserParam.columnConditionIdentify[index].operator === "awal"
+            parserParam.conditionIdentify.columnConditionIdentify[index]
+              .operator === "awal"
           ) {
             queryForming.push(
-              parserParam.columnConditionIdentify[index].view +
+              parserParam.conditionIdentify.columnConditionIdentify[index]
+                .view +
                 "." +
-                parserParam.columnConditionIdentify[index].column +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .column +
                 ' LIKE "' +
-                parserParam.columnConditionIdentify[index].conditionValue +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .conditionValue +
                 '%"'
             );
           } else if (
-            parserParam.columnConditionIdentify[index].operator === "akhir"
+            parserParam.conditionIdentify.columnConditionIdentify[index]
+              .operator === "akhir"
           ) {
             queryForming.push(
-              parserParam.columnConditionIdentify[index].view +
+              parserParam.conditionIdentify.columnConditionIdentify[index]
+                .view +
                 "." +
-                parserParam.columnConditionIdentify[index].column +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .column +
                 ' LIKE "%' +
-                parserParam.columnConditionIdentify[index].conditionValue +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .conditionValue +
                 '"'
             );
           } else if (
             [">=", ">", "<=", "<", "=", "!="].includes(
-              parserParam.columnConditionIdentify[index].operator
+              parserParam.conditionIdentify.columnConditionIdentify[index]
+                .operator
             )
           ) {
             queryForming.push(
-              `${parserParam.columnConditionIdentify[index].view}.${parserParam.columnConditionIdentify[index].column} ${parserParam.columnConditionIdentify[index].operator} "${parserParam.columnConditionIdentify[index].conditionValue}"`
+              `${parserParam.conditionIdentify.columnConditionIdentify[index].view}.${parserParam.conditionIdentify.columnConditionIdentify[index].column} ${parserParam.conditionIdentify.columnConditionIdentify[index].operator} "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
             );
           } else if (
-            parserParam.columnConditionIdentify[index].operator === "default"
+            parserParam.conditionIdentify.columnConditionIdentify[index]
+              .operator === "default"
           ) {
             queryForming.push(
-              parserParam.columnConditionIdentify[index].view +
+              parserParam.conditionIdentify.columnConditionIdentify[index]
+                .view +
                 "." +
-                parserParam.columnConditionIdentify[index].column +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .column +
                 ' = "' +
-                parserParam.columnConditionIdentify[index].conditionValue +
+                parserParam.conditionIdentify.columnConditionIdentify[index]
+                  .conditionValue +
                 '"'
             );
           }
 
-          if (parserParam.columnConditionIdentify[index + 1] !== undefined) {
-            switch (parserParam.logicOperatorIdentify[index]) {
+          if (
+            parserParam.conditionIdentify.columnConditionIdentify[index + 1] !==
+            undefined
+          ) {
+            switch (
+              parserParam.conditionIdentify.logicOperatorIdentify[index]
+            ) {
               case "dan":
                 queryForming.push("AND");
                 break;
@@ -126,31 +147,37 @@ class TranslatorService {
       }
     }
 
-    if (parserParam.orderIdentify.length > 0) {
+    if (parserParam.keywordIdentify.orderIdentify.length > 0) {
       queryForming.push("ORDER BY");
 
       let queryFormingOrder = [];
 
-      for (let index = 0; index < parserParam.orderIdentify.length; index++) {
+      for (
+        let index = 0;
+        index < parserParam.keywordIdentify.orderIdentify.length;
+        index++
+      ) {
         if (
           ["turun", "rendah"].includes(
-            parserParam.orderIdentify[index].sortDirection
+            parserParam.keywordIdentify.orderIdentify[index].sortDirection
           )
         ) {
           queryFormingOrder.push(
-            `${parserParam.orderIdentify[index].view}.${parserParam.orderIdentify[index].column} DESC`
+            `${parserParam.keywordIdentify.orderIdentify[index].view}.${parserParam.keywordIdentify.orderIdentify[index].column} DESC`
           );
         } else {
           queryFormingOrder.push(
-            `${parserParam.orderIdentify[index].view}.${parserParam.orderIdentify[index].column} ASC`
+            `${parserParam.keywordIdentify.orderIdentify[index].view}.${parserParam.keywordIdentify.orderIdentify[index].column} ASC`
           );
         }
       }
       queryForming.push(queryFormingOrder.join(", "));
     }
 
-    if (parserParam.limitIdentify) {
-      queryForming.push(`LIMIT ${parserParam.limitIdentify.amount}`);
+    if (parserParam.keywordIdentify.limitIdentify) {
+      queryForming.push(
+        `LIMIT ${parserParam.keywordIdentify.limitIdentify.amount}`
+      );
     }
 
     const translate = queryForming.join(" ");
