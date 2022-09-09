@@ -48,7 +48,10 @@
         "nomor induk pegawai": "nip",
         "satu kredit semester": "sks",
         "indeks prestasi kumulatif": "ipk",
-        ",": " , "
+        ",": " , ",
+        " ti ": " teknik informatika ",
+        " sk ": " sistem komputer ",
+        " si ": " sistem informasi "
     },
     "stopword": [
         "coba",
