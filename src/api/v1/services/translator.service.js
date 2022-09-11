@@ -53,51 +53,33 @@ class TranslatorService {
           parserParam.conditionIdentify.columnConditionIdentify[index]
             .conditionValue !== undefined
         ) {
+          queryForming.push(
+            parserParam.conditionIdentify.columnConditionIdentify[index].view +
+              "." +
+              parserParam.conditionIdentify.columnConditionIdentify[index]
+                .column
+          );
+
           if (
             parserParam.conditionIdentify.columnConditionIdentify[index]
               .operator === "kandung"
           ) {
             queryForming.push(
-              parserParam.conditionIdentify.columnConditionIdentify[index]
-                .view +
-                "." +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .column +
-                " LIKE " +
-                '"%' +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .conditionValue +
-                '%"'
+              `LIKE "%${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}%"`
             );
           } else if (
             parserParam.conditionIdentify.columnConditionIdentify[index]
               .operator === "awal"
           ) {
             queryForming.push(
-              parserParam.conditionIdentify.columnConditionIdentify[index]
-                .view +
-                "." +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .column +
-                ' LIKE "' +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .conditionValue +
-                '%"'
+              `LIKE "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}%"`
             );
           } else if (
             parserParam.conditionIdentify.columnConditionIdentify[index]
               .operator === "akhir"
           ) {
             queryForming.push(
-              parserParam.conditionIdentify.columnConditionIdentify[index]
-                .view +
-                "." +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .column +
-                ' LIKE "%' +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .conditionValue +
-                '"'
+              `LIKE "%${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
             );
           } else if (
             [">=", ">", "<=", "<", "=", "!="].includes(
@@ -106,22 +88,11 @@ class TranslatorService {
             )
           ) {
             queryForming.push(
-              `${parserParam.conditionIdentify.columnConditionIdentify[index].view}.${parserParam.conditionIdentify.columnConditionIdentify[index].column} ${parserParam.conditionIdentify.columnConditionIdentify[index].operator} "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
+              `${parserParam.conditionIdentify.columnConditionIdentify[index].operator} "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
             );
-          } else if (
-            parserParam.conditionIdentify.columnConditionIdentify[index]
-              .operator === "default"
-          ) {
+          } else {
             queryForming.push(
-              parserParam.conditionIdentify.columnConditionIdentify[index]
-                .view +
-                "." +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .column +
-                ' = "' +
-                parserParam.conditionIdentify.columnConditionIdentify[index]
-                  .conditionValue +
-                '"'
+              `= "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
             );
           }
 
@@ -129,19 +100,10 @@ class TranslatorService {
             parserParam.conditionIdentify.columnConditionIdentify[index + 1] !==
             undefined
           ) {
-            switch (
-              parserParam.conditionIdentify.logicOperatorIdentify[index]
-            ) {
-              case "dan":
-                queryForming.push("AND");
-                break;
-              case "atau":
-                queryForming.push("OR");
-                break;
-              default:
-                queryForming.push("AND");
-                break;
-            }
+            parserParam.conditionIdentify.logicOperatorIdentify[index] ===
+            "atau"
+              ? queryForming.push("OR")
+              : queryForming.push("AND");
           }
         }
       }
@@ -150,7 +112,7 @@ class TranslatorService {
     if (parserParam.keywordIdentify.orderIdentify.length > 0) {
       queryForming.push("ORDER BY");
 
-      let queryFormingOrder = [];
+      const queryFormingOrder = [];
 
       for (
         let index = 0;
