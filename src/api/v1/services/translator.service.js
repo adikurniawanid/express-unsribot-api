@@ -3,144 +3,146 @@
 class TranslatorService {
   static async translating(parserParam) {
     const queryForming = [];
+    const selectIdentify = parserParam.keywordIdentify.selectIdentify;
+    const distinctIdentify = parserParam.keywordIdentify.distinctIdentify;
+    const columnIdentify = parserParam.columnIdentify;
+    const viewIdentify = parserParam.viewIdentify;
+    const columnConditionIdentify =
+      parserParam.conditionIdentify.columnConditionIdentify;
+    const orderIdentify = parserParam.keywordIdentify.orderIdentify;
+    const limitIdentify = parserParam.keywordIdentify.limitIdentify;
 
-    if (parserParam.keywordIdentify.selectIdentify) {
-      queryForming.push("SELECT");
-      if (parserParam.keywordIdentify.distinctIdentify) {
+    const queryFormingSelect = () => {
+      if (selectIdentify) {
+        queryForming.push("SELECT");
+      } else {
+        throw {
+          status: 404,
+          message: "SELECT not found",
+        };
+      }
+    };
+
+    const queryFormingDistinct = () => {
+      if (distinctIdentify) {
         queryForming.push("DISTINCT");
       }
-    } else {
-      throw {
-        status: 404,
-        message: "SELECT not found",
-      };
-    }
+    };
 
-    if (parserParam.columnIdentify === "default") {
-      queryForming.push("*");
-    } else {
-      const queryFormingColumn = [];
-      for (let index = 0; index < parserParam.columnIdentify.length; index++) {
-        queryFormingColumn.push(
-          `${parserParam.columnIdentify[index].view}.${parserParam.columnIdentify[index].column}`
-        );
-      }
-      queryForming.push(queryFormingColumn.join(", "));
-    }
-
-    if (parserParam.viewIdentify.length > 0) {
-      queryForming.push("FROM");
-      queryForming.push(parserParam.viewIdentify.join(", "));
-    } else {
-      throw {
-        status: 404,
-        message: "Table not found",
-      };
-    }
-
-    if (
-      parserParam.conditionIdentify.columnConditionIdentify.length > 0 &&
-      parserParam.conditionIdentify.columnConditionIdentify[0].conditionValue
-    ) {
-      queryForming.push("WHERE");
-
-      for (
-        let index = 0;
-        index < parserParam.conditionIdentify.columnConditionIdentify.length;
-        index++
-      ) {
-        if (
-          parserParam.conditionIdentify.columnConditionIdentify[index]
-            .conditionValue !== undefined
-        ) {
-          queryForming.push(
-            parserParam.conditionIdentify.columnConditionIdentify[index].view +
-              "." +
-              parserParam.conditionIdentify.columnConditionIdentify[index]
-                .column
+    const queryFormingColumn = () => {
+      if (columnIdentify === "default") {
+        queryForming.push("*");
+      } else {
+        const queryFormingColumn = [];
+        for (let index = 0; index < columnIdentify.length; index++) {
+          queryFormingColumn.push(
+            `${columnIdentify[index].view}.${columnIdentify[index].column}`
           );
+        }
+        queryForming.push(queryFormingColumn.join(", "));
+      }
+    };
 
+    const queryFormingView = () => {
+      if (viewIdentify.length > 0) {
+        queryForming.push("FROM");
+        queryForming.push(viewIdentify.join(", "));
+      } else {
+        throw {
+          status: 404,
+          message: "Table not found",
+        };
+      }
+    };
+
+    const queryFormingCondition = () => {
+      if (
+        columnConditionIdentify.length > 0 &&
+        columnConditionIdentify[0].conditionValue
+      ) {
+        queryForming.push("WHERE");
+
+        for (let index = 0; index < columnConditionIdentify.length; index++) {
+          if (columnConditionIdentify[index].conditionValue !== undefined) {
+            queryForming.push(
+              columnConditionIdentify[index].view +
+                "." +
+                columnConditionIdentify[index].column
+            );
+
+            if (columnConditionIdentify[index].operator === "kandung") {
+              queryForming.push(
+                `LIKE "%${columnConditionIdentify[index].conditionValue}%"`
+              );
+            } else if (columnConditionIdentify[index].operator === "awal") {
+              queryForming.push(
+                `LIKE "${columnConditionIdentify[index].conditionValue}%"`
+              );
+            } else if (columnConditionIdentify[index].operator === "akhir") {
+              queryForming.push(
+                `LIKE "%${columnConditionIdentify[index].conditionValue}"`
+              );
+            } else if (
+              [">=", ">", "<=", "<", "=", "!="].includes(
+                columnConditionIdentify[index].operator
+              )
+            ) {
+              queryForming.push(
+                `${columnConditionIdentify[index].operator} "${columnConditionIdentify[index].conditionValue}"`
+              );
+            } else {
+              queryForming.push(
+                `= "${columnConditionIdentify[index].conditionValue}"`
+              );
+            }
+
+            if (columnConditionIdentify[index + 1] !== undefined) {
+              parserParam.conditionIdentify.logicOperatorIdentify[index] ===
+              "atau"
+                ? queryForming.push("OR")
+                : queryForming.push("AND");
+            }
+          }
+        }
+      }
+    };
+
+    const queryFormingOrder = () => {
+      if (parserParam.keywordIdentify.orderIdentify.length > 0) {
+        queryForming.push("ORDER BY");
+
+        const queryFormingOrder = [];
+
+        for (let index = 0; index < orderIdentify.length; index++) {
           if (
-            parserParam.conditionIdentify.columnConditionIdentify[index]
-              .operator === "kandung"
+            ["turun", "rendah"].includes(orderIdentify[index].sortDirection)
           ) {
-            queryForming.push(
-              `LIKE "%${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}%"`
-            );
-          } else if (
-            parserParam.conditionIdentify.columnConditionIdentify[index]
-              .operator === "awal"
-          ) {
-            queryForming.push(
-              `LIKE "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}%"`
-            );
-          } else if (
-            parserParam.conditionIdentify.columnConditionIdentify[index]
-              .operator === "akhir"
-          ) {
-            queryForming.push(
-              `LIKE "%${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
-            );
-          } else if (
-            [">=", ">", "<=", "<", "=", "!="].includes(
-              parserParam.conditionIdentify.columnConditionIdentify[index]
-                .operator
-            )
-          ) {
-            queryForming.push(
-              `${parserParam.conditionIdentify.columnConditionIdentify[index].operator} "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
+            queryFormingOrder.push(
+              `${orderIdentify[index].view}.${orderIdentify[index].column} DESC`
             );
           } else {
-            queryForming.push(
-              `= "${parserParam.conditionIdentify.columnConditionIdentify[index].conditionValue}"`
+            queryFormingOrder.push(
+              `${orderIdentify[index].view}.${orderIdentify[index].column} ASC`
             );
           }
-
-          if (
-            parserParam.conditionIdentify.columnConditionIdentify[index + 1] !==
-            undefined
-          ) {
-            parserParam.conditionIdentify.logicOperatorIdentify[index] ===
-            "atau"
-              ? queryForming.push("OR")
-              : queryForming.push("AND");
-          }
         }
+        queryForming.push(queryFormingOrder.join(", "));
       }
-    }
+    };
 
-    if (parserParam.keywordIdentify.orderIdentify.length > 0) {
-      queryForming.push("ORDER BY");
-
-      const queryFormingOrder = [];
-
-      for (
-        let index = 0;
-        index < parserParam.keywordIdentify.orderIdentify.length;
-        index++
-      ) {
-        if (
-          ["turun", "rendah"].includes(
-            parserParam.keywordIdentify.orderIdentify[index].sortDirection
-          )
-        ) {
-          queryFormingOrder.push(
-            `${parserParam.keywordIdentify.orderIdentify[index].view}.${parserParam.keywordIdentify.orderIdentify[index].column} DESC`
-          );
-        } else {
-          queryFormingOrder.push(
-            `${parserParam.keywordIdentify.orderIdentify[index].view}.${parserParam.keywordIdentify.orderIdentify[index].column} ASC`
-          );
-        }
+    const queryFormingLimit = () => {
+      if (limitIdentify) {
+        queryForming.push(`LIMIT ${limitIdentify.amount}`);
       }
-      queryForming.push(queryFormingOrder.join(", "));
-    }
+    };
 
-    if (parserParam.keywordIdentify.limitIdentify) {
-      queryForming.push(
-        `LIMIT ${parserParam.keywordIdentify.limitIdentify.amount}`
-      );
-    }
+    queryFormingSelect();
+    queryFormingDistinct();
+    queryFormingColumn();
+    queryFormingView();
+    queryFormingCondition();
+    queryFormingOrder();
+    queryFormingLimit();
 
     const translate = queryForming.join(" ");
 
