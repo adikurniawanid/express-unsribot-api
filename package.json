@@ -6,7 +6,8 @@
     "start": "nodemon ./bin/www",
     "bot": "nodemon ./src/bot.js",
     "test": "jest --detectOpenHandles",
-    "testDataset": "jest ./test/dataset.test.js --detectOpenHandles"
+    "testDataset": "jest ./test/dataset.test.js --detectOpenHandles",
+    "it": "jest ./test/integration.test.js --detectOpenHandles"
   },
   "dependencies": {
     "axios": "^0.27.2",

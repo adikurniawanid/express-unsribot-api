@@ -161,15 +161,14 @@ describe("NL2sql API", () => {
     request(app)
       .post("/v1/nl2sql")
       .send({
-        sentence: "temukan data dosen dengan nama kurniawan",
+        sentence: "temukan data dosen dengan nama aze urutkan berdasarkan nama",
       })
       .end((err, res) => {
         if (err) {
           done(err);
         } else {
-          expect(res.status).toBe(404);
-          expect(res.body).toHaveProperty("message");
-          expect(res.body.message).toBe("Data not found");
+          expect(res.status).toBe(200);
+          expect(res.body).toHaveProperty("data");
           done();
         }
       });
