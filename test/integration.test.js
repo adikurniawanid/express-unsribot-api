@@ -139,7 +139,7 @@ describe("NL2sql API", () => {
       });
   });
 
-  it("Table Not Found", (done) => {
+  it("View Not Found", (done) => {
     request(app)
       .post("/v1/nl2sql")
       .send({
@@ -151,7 +151,7 @@ describe("NL2sql API", () => {
         } else {
           expect(res.status).toBe(404);
           expect(res.body).toHaveProperty("message");
-          expect(res.body.message).toBe("Table not found");
+          expect(res.body.message).toBe("View not found");
           done();
         }
       });

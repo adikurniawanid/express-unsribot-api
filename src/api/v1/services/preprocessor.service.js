@@ -16,10 +16,6 @@ class PreprocessorService {
     );
   }
 
-  static async globalReplace(sentenceParam, fromParam, toParam) {
-    return sentenceParam.replace(new RegExp(fromParam, "gi"), toParam);
-  }
-
   static async stopwordRemoval(sentenceParam) {
     const stopwordDictionary = await DictionaryService.getStopwordList();
     const setence = await tokenizeHelper(sentenceParam);
@@ -49,14 +45,14 @@ class PreprocessorService {
     const stemmer = new sastrawijs.Stemmer(
       await DictionaryService.getStemmerCustomList()
     );
-    const tableList = await DictionaryService.getViewList();
-    const columnList = await DictionaryService.getColumnList();
+    const viewAndColumnList = (await DictionaryService.getViewList()).concat(
+      await DictionaryService.getColumnList()
+    );
+
     let result = [];
 
     token.forEach((element) => {
-      if (columnList.includes(element)) {
-        result.push(element);
-      } else if (tableList.includes(element)) {
+      if (viewAndColumnList.includes(element)) {
         result.push(element);
       } else {
         result.push(stemmer.stem(element));
