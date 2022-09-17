@@ -43,3 +43,5 @@ jspm_packages
 public/dataset copy.json
 
 public/dataset.json
+
+data.xlsx

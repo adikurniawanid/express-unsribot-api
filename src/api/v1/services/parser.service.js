@@ -7,7 +7,7 @@ class ParserService {
     const selectDictionary = await DictionaryService.getSelectList();
     for (let index = 0; index < tokenParam.length; index++) {
       if (selectDictionary.includes(tokenParam[index])) {
-        return true;
+        return tokenParam[index];
       }
     }
     return false;
@@ -47,10 +47,8 @@ class ParserService {
         conditionStatus = true;
       }
       if (conditionStatus) {
-        if (tokenParam[index] === "atau") {
-          result.push("OR");
-        } else if (tokenParam[index] === "dan") {
-          result.push("AND");
+        if (["atau", "dan"].includes(tokenParam[index])) {
+          result.push(tokenParam[index]);
         }
       }
     }
@@ -65,96 +63,62 @@ class ParserService {
     let column = [];
     const columnCondition = [];
     let conditionStatus = false;
-    let orderStatus = false;
     const objectIdentifyColumn =
       await DictionaryService.getObjectColumnListByView(identifyViewParam);
 
-    for (let index = 0; index < tokenParam.length; index++) {
+    identifyColumnLoop: for (
+      let index = 0;
+      index < tokenParam.length;
+      index++
+    ) {
       if (tokenParam[index] === identifyWhereParam) {
         conditionStatus = true;
       }
-      if (tokenParam[index] === "urut") {
-        orderStatus = true;
+
+      if (["urut", "batas"].includes(tokenParam[index])) {
+        break identifyColumnLoop;
       }
 
-      if (conditionStatus && !orderStatus) {
+      if (conditionStatus) {
         for (const key in objectIdentifyColumn) {
           if (objectIdentifyColumn[key].includes(tokenParam[index])) {
-            if (tokenParam[index + 1] === "kandung") {
-              columnCondition.push(
-                key +
-                  "." +
-                  tokenParam[index] +
-                  " LIKE " +
-                  '"%' +
-                  tokenParam[index + 2] +
-                  '%"'
-              );
-              index += 2;
-            } else if (tokenParam[index + 1] === "awal") {
-              columnCondition.push(
-                key +
-                  "." +
-                  tokenParam[index] +
-                  " LIKE " +
-                  '"' +
-                  tokenParam[index + 2] +
-                  '%"'
-              );
-              index += 2;
-            } else if (tokenParam[index + 1] === "akhir") {
-              columnCondition.push(
-                key +
-                  "." +
-                  tokenParam[index] +
-                  " LIKE " +
-                  '"%' +
-                  tokenParam[index + 2] +
-                  '"'
-              );
-              index += 2;
-            } else if (
-              tokenParam[index + 1] === "<" ||
-              tokenParam[index + 1] === ">" ||
-              tokenParam[index + 1] === "<=" ||
-              tokenParam[index + 1] === ">="
+            if (
+              ["kandung", "awal", "akhir", "<", ">", "<=", ">="].includes(
+                tokenParam[index + 1]
+              )
             ) {
-              columnCondition.push(
-                key +
-                  "." +
-                  tokenParam[index] +
-                  " " +
-                  tokenParam[index + 1] +
-                  ' "' +
-                  tokenParam[index + 2] +
-                  '"'
-              );
+              columnCondition.push({
+                view: key,
+                column: tokenParam[index],
+                operator: tokenParam[index + 1],
+                conditionValue: tokenParam[index + 2],
+              });
               index += 2;
             } else {
-              columnCondition.push(
-                key +
-                  "." +
-                  tokenParam[index] +
-                  " = " +
-                  '"' +
-                  tokenParam[index + 1] +
-                  '"'
-              );
+              columnCondition.push({
+                view: key,
+                column: tokenParam[index],
+                operator: "default",
+                conditionValue: tokenParam[index + 1],
+              });
               index += 1;
             }
           }
         }
-      } else if (!conditionStatus && !orderStatus) {
+      } else if (!conditionStatus) {
         for (const key in objectIdentifyColumn) {
           if (objectIdentifyColumn[key].includes(tokenParam[index])) {
-            column.push(key + "." + tokenParam[index]);
+            column.push({
+              view: key,
+              column: tokenParam[index],
+            });
           }
         }
       }
     }
 
     if (column.length === 0) {
-      column = ["*"];
+      column = "default";
     }
 
     return [column, columnCondition];
@@ -175,14 +139,30 @@ class ParserService {
       }
       for (const key in objectIdentifyColumn) {
         if (objectIdentifyColumn[key].includes(tokenParam[index])) {
-          if (
-            tokenParam[index + 1] === "turun" ||
-            tokenParam[index + 1] === "rendah"
+          if (["turun", "rendah"].includes(tokenParam[index + 1])) {
+            result.push({
+              view: key,
+              column: tokenParam[index],
+              sortDirection: tokenParam[index + 1],
+            });
+            index++;
+          } else if (
+            ["naik", "tingkat", "tinggi", "ningkat"].includes(
+              tokenParam[index + 1]
+            )
           ) {
-            result.push(key + "." + tokenParam[index] + " DESC");
+            result.push({
+              view: key,
+              column: tokenParam[index],
+              sortDirection: tokenParam[index + 1],
+            });
             index++;
           } else {
-            result.push(key + "." + tokenParam[index] + " ASC");
+            result.push({
+              view: key,
+              column: tokenParam[index],
+              sortDirection: "default",
+            });
             index++;
           }
         }
@@ -199,7 +179,10 @@ class ParserService {
         typeof Number(tokenParam[index + 1]) == "number" &&
         !isNaN(Number(tokenParam[index + 1]))
       ) {
-        result = "LIMIT " + Number(tokenParam[index + 1]);
+        result = {
+          word: tokenParam[index],
+          amount: tokenParam[index + 1],
+        };
       }
     });
     return result;
@@ -207,19 +190,42 @@ class ParserService {
 
   static async identifyDistinct(tokenParam) {
     if (tokenParam.includes("unik")) {
-      return true;
+      return "unik";
     }
     return false;
   }
 
+  static async identifyKeyword(tokenParam, viewParam) {
+    return {
+      selectIdentify: await this.identifySelect(tokenParam),
+      distinctIdentify: await this.identifyDistinct(tokenParam),
+      limitIdentify: await this.identifyLimit(tokenParam),
+      orderIdentify: await this.identifyOrder(tokenParam, viewParam),
+    };
+  }
+
+  static async identifyCondition(tokenParam, viewParam) {
+    const conditionIdentify = await this.identifyWhere(tokenParam);
+    const [columnIdentify, columnConditionIdentify] =
+      await ParserService.identifyColumn(
+        tokenParam,
+        viewParam,
+        conditionIdentify
+      );
+
+    return {
+      whereIdentify: conditionIdentify,
+      columnConditionIdentify: columnConditionIdentify,
+      logicOperatorIdentify: await this.identifyLogicOperator(
+        tokenParam,
+        conditionIdentify
+      ),
+    };
+  }
+
   static async parsing(tokenParam) {
-    const selectIdentify = await this.identifySelect(tokenParam);
     const viewIdentify = await this.identifyView(tokenParam);
     const conditionIdentify = await this.identifyWhere(tokenParam);
-    const logicOperatorIdentify = await this.identifyLogicOperator(
-      tokenParam,
-      conditionIdentify
-    );
 
     const [columnIdentify, columnConditionIdentify] =
       await ParserService.identifyColumn(
@@ -228,20 +234,11 @@ class ParserService {
         conditionIdentify
       );
 
-    const orderIdentify = await this.identifyOrder(tokenParam, viewIdentify);
-    const limitIdentify = await this.identifyLimit(tokenParam);
-    const distinctIdentify = await this.identifyDistinct(tokenParam);
-
     return {
-      selectIdentify,
+      keywordIdentify: await this.identifyKeyword(tokenParam, viewIdentify),
       columnIdentify,
       viewIdentify,
-      conditionIdentify,
-      columnConditionIdentify,
-      logicOperatorIdentify,
-      orderIdentify,
-      limitIdentify,
-      distinctIdentify,
+      conditionIdentify: await this.identifyCondition(tokenParam, viewIdentify),
     };
   }
 }

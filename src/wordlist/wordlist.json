@@ -18,27 +18,26 @@
         "dari",
         "pada",
         "mana"
-    ],
-    "kolom": {
+    ]    ,
+    "sinonim": {
+        "&" : "dan",
+        "/" : "atau",
         "jenis kelamin": "jenis_kelamin",
         "dosen bimbing": "dosen_pembimbing_akademik",
         "dosen pa": "dosen_pembimbing_akademik",
-        "program studi": "program_studi"
-    },
-    "view": {
+        "program studi": "program_studi",
         "mata kuliah": "mata_kuliah",
-        "matakuliah": "mata_kuliah"
-    },
-    "perbandingan": {
+        "matakuliah": "mata_kuliah",
         " besar sama ": " >= ",
         " kurang sama ": " <= ",
         " kecil sama ": " <= ",
         " atas ": " > ",
         " bawah ": " < ",
         " kurang ": " < ",
-        " besar ": " > "
-    },
-    "sinonim": {
+        " besar ": " > ",
+        " tinggi ke rendah ": " turun ",
+        " rendah ke tinggi ": " naik ",
+        "tanpa duplikat": "unik",
         "perempuan": "wanita",
         "laki laki": "pria",
         "lakilaki": "pria",
@@ -47,8 +46,12 @@
         "mk": "mata_kuliah",
         "nomor induk mahasiswa": "nim",
         "nomor induk pegawai": "nip",
-        "satuan kredit semester": "sks",
-        "indeks prestasi kumulatif": "ipk"
+        "satu kredit semester": "sks",
+        "indeks prestasi kumulatif": "ipk",
+        ",": " , ",
+        " ti ": " teknik informatika ",
+        " sk ": " sistem komputer ",
+        " si ": " sistem informasi "
     },
     "stopword": [
         "coba",
@@ -1072,7 +1075,6 @@
         "ancak",
         "ancala",
         "ancam",
-        "ancang",
         "ancar-ancar",
         "ancoa",
         "ancol",
@@ -3789,7 +3791,6 @@
         "buar",
         "buari",
         "buas",
-        "buat",
         "buaya",
         "bubar",
         "bubo",
@@ -4585,7 +4586,6 @@
         "cercah",
         "cercak",
         "cercap",
-        "cerdas",
         "cerdik",
         "cere",
         "cerecek",
@@ -10909,7 +10909,6 @@
         "jariah",
         "jariji",
         "jarimah",
-        "jaring",
         "jarit",
         "jarjau",
         "jaro",
@@ -19312,7 +19311,6 @@
         "okultisme",
         "okupasi",
         "okupasional",
-        "olah",
         "olahraga",
         "olak",
         "olak-alik",
@@ -21925,7 +21923,6 @@
         "progeni",
         "progesteron",
         "prognosis",
-        "program",
         "programa",
         "progres",
         "progresif",
@@ -27603,7 +27600,6 @@
         "telinga",
         "telingkah",
         "telingkung",
-        "teliti",
         "telmotofit",
         "telop",
         "telor",
@@ -30005,6 +30001,7 @@
         "kandung",
         "angkatan",
         "suliet",
+        "usept",
         "beri"
     ]
 }
