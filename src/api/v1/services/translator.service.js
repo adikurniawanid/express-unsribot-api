@@ -50,7 +50,7 @@ class TranslatorService {
       } else {
         throw {
           status: 404,
-          message: "Table not found",
+          message: "View Table not found",
         };
       }
     };
