@@ -59,13 +59,9 @@ Contoh:
       await bot.sendMessage(chatId, resp.sql, opts);
 
       if (resp.result.length == 1) {
-        console.log(
-          JSON.stringify(resp.result, null, 2).replace(/[{"\[\]}]/g, "")
-        );
-
         bot.sendMessage(
           chatId,
-          JSON.stringify(resp.result, null, 2).replace(/[{"\[\]}]/g, "")
+          JSON.stringify(resp.result[0], null, "･").replace(/[{"}]/g, "")
         );
       } else if (resp.result.length > 1) {
         await bot.sendDocument(chatId, "data.xlsx");
