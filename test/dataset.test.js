@@ -18,8 +18,12 @@ describe("NL2sql API", () => {
             done(err);
           } else {
             expect(res.status).toBe(200);
-            expect(res.body.data.translate).toBe(sql);
-            done();
+            try {
+              expect(res.body.data.translate).toBe(sql);
+              done();
+            } catch (err) {
+              done(err);
+            }
           }
         });
     });
