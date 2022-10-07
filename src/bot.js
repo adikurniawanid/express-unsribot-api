@@ -19,7 +19,8 @@ bot.on("message", async (msg) => {
         chatId,
         `Halo @${msg.from.username}, selamat datang di @nl2sql_bot!
 
-Cara penggunaan bot dapat dilihat pada perintah /help
+Cara penggunaan bot dapat dilihat pada perintah /help.
+Untuk mengetahui lebih lanjut tentang chatbot ini dapat dilihat pada perintah /manualbook.
         `,
         opts
       );
@@ -34,6 +35,11 @@ Contoh:
 3.siapa nama dosen yang memiliki nip 0902xxxxxx?
         `,
         opts
+      );
+    } else if (msg.text === "/manualbook") {
+      await bot.sendDocument(
+        chatId,
+        "BQACAgUAAxkBAAEYxLRjP9F0S_60KJYdRghVGePXk8LWhgACpwcAAkWNAVaC_9Bh0oB0pCoE"
       );
     } else {
       const result = (
@@ -71,131 +77,10 @@ Contoh:
     }
   } catch (error) {
     console.log(error);
-    if (error.response.status === 404) {
+    if (error?.response?.status) {
       bot.sendMessage(chatId, error.response.data.message, opts);
-      // }
-      // if (error.response.data.message) {
-      //   bot.sendMessage(chatId, error.response.data.message, opts);
-      // } else if (error.response.body.description) {
-      //   bot.sendMessage(chatId, error.response.body.description, opts);
     } else {
       bot.sendMessage(chatId, error);
     }
   }
 });
-
-// bot.onText(/\/pre (.+)/, async (msg, match) => {
-//   const chatId = msg.chat.id;
-//   const opts = {
-//     reply_to_message_id: msg.message_id,
-//   };
-
-//   try {
-//     const resp = (
-//       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-//         sentence: match[1],
-//       })
-//     ).data.data.preprocess;
-
-//     await bot.sendMessage(chatId, JSON.stringify(resp), opts);
-//   } catch (error) {
-//     console.log(error);
-//     if (error.response.data.message) {
-//       bot.sendMessage(chatId, error.response.data.message, opts);
-//     } else if (error.response.body.description) {
-//       bot.sendMessage(chatId, error.response.body.description, opts);
-//     } else {
-//       bot.sendMessage(chatId, error);
-//     }
-//   }
-// });
-
-// bot.onText(/\/parser (.+)/, async (msg, match) => {
-//   const chatId = msg.chat.id;
-//   const opts = {
-//     reply_to_message_id: msg.message_id,
-//   };
-
-//   try {
-//     const resp = (
-//       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-//         sentence: match[1],
-//       })
-//     ).data.data.parse;
-
-//     await bot.sendMessage(chatId, JSON.stringify(resp, null, 2), opts);
-//   } catch (error) {
-//     console.log(error);
-//     if (error.response.data.message) {
-//       bot.sendMessage(chatId, error.response.data.message, opts);
-//     } else if (error.response.body.description) {
-//       bot.sendMessage(chatId, error.response.body.description, opts);
-//     } else {
-//       bot.sendMessage(chatId, error);
-//     }
-//   }
-// });
-
-// bot.onText(/\/translator (.+)/, async (msg, match) => {
-//   const chatId = msg.chat.id;
-//   const opts = {
-//     reply_to_message_id: msg.message_id,
-//   };
-
-//   try {
-//     const resp = (
-//       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-//         sentence: match[1],
-//       })
-//     ).data.data.translate;
-
-//     await bot.sendMessage(chatId, JSON.stringify(resp), opts);
-//   } catch (error) {
-//     console.log(error);
-//     if (error.response.data.message) {
-//       bot.sendMessage(chatId, error.response.data.message, opts);
-//     } else if (error.response.body.description) {
-//       bot.sendMessage(chatId, error.response.body.description, opts);
-//     } else {
-//       bot.sendMessage(chatId, error);
-//     }
-//   }
-// });
-
-// bot.onText(/\/query (.+)/, async (msg, match) => {
-//   const chatId = msg.chat.id;
-//   const opts = {
-//     reply_to_message_id: msg.message_id,
-//   };
-
-//   try {
-//     const resp = (
-//       await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-//         sentence: match[1],
-//       })
-//     ).data.data.query;
-
-//     if (resp.length < 4000) {
-//       await bot.sendMessage(
-//         chatId,
-//         JSON.stringify(resp, null, 2).substring(0, 4000),
-//         opts
-//       );
-//       await bot.sendMessage(
-//         chatId,
-//         `To long to show, please download the excel file from command:\n /nl2sql ${match[1]}`
-//       );
-//     } else {
-//       bot.sendMessage(chatId, "Data not found");
-//     }
-//   } catch (error) {
-//     console.log(error);
-//     if (error.response.data.message) {
-//       bot.sendMessage(chatId, error.response.data.message, opts);
-//     } else if (error.response.body.description) {
-//       bot.sendMessage(chatId, error.response.body.description, opts);
-//     } else {
-//       bot.sendMessage(chatId, error);
-//     }
-//   }
-// });
