@@ -1,160 +1,86 @@
 const telegramBotConfig = require("../src/config/telegramBot.config");
 const TelegramBot = require("node-telegram-bot-api");
 const { default: axios } = require("axios");
+const XLSX = require("xlsx");
 
 const bot = new TelegramBot(telegramBotConfig.TELEGRAM_BOT_TOKEN, {
   polling: true,
 });
 
-bot.onText(/\/pre (.+)/, async (msg, match) => {
-  try {
-    const chatId = msg.chat.id;
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/preprocessing", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/parser (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/parser", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp, null, 2), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/translator (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/translator", {
-        sentence: match[1],
-      })
-    ).data.data;
-    bot
-      .sendMessage(chatId, resp, {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/query (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/query", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp, null, 2), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/nl2sql (.+)/, async (msg, match) => {
-  const chatId = msg.chat.id;
-  try {
-    const resp = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        sentence: match[1],
-      })
-    ).data.data;
-
-    bot
-      .sendMessage(chatId, JSON.stringify(resp, null, 2), {
-        reply_to_message_id: msg.message_id,
-      })
-      .catch((e) =>
-        bot.sendMessage(chatId, "Bad Request: reply message is too long")
-      );
-  } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
-    }
-  }
-});
-
-bot.onText(/\/querySingle (.+)/, async (msg, match) => {
+bot.on("message", async (msg) => {
   const chatId = msg.chat.id;
   const opts = {
     reply_to_message_id: msg.message_id,
   };
 
   try {
-    const result = (
-      await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
-        sentence: match[1],
-      })
-    ).data.data;
+    if (msg.text === "/start") {
+      bot.sendMessage(
+        chatId,
+        `Halo @${msg.from.username}, selamat datang di @nl2sql_bot!
 
-    const resp = {
-      sql: result.translator,
-      result: result.resultQuery,
-    };
+Cara penggunaan bot dapat dilihat pada perintah /help.
+Untuk mengetahui lebih lanjut tentang chatbot ini dapat dilihat pada perintah /manualbook.
+        `,
+        opts
+      );
+    } else if (msg.text === "/help") {
+      bot.sendMessage(
+        chatId,
+        `Silahkan ketikan kalimat perintah atau tanya seputar data mahasiswa, dosen, dan mata kuliah pada Sistem Informasi Akademik (SIMAK) Jurusan Teknik Informatika Universitas Sriwijaya, Bot akan menerjemahkan ke dalam bahasa Structured Query Language (SQL), dan menampilkan hasil query.
+        
+Contoh:
+1.tampilkan data dosen pembimbing dari mahasiswa yang bernama adi kurniawan!
+2.berikan data mk yang memiliki sks 3 pada semester 5!
+3.siapa nama dosen yang memiliki nip 0902xxxxxx?
+        `,
+        opts
+      );
+    } else if (msg.text === "/manualbook") {
+      await bot.sendDocument(
+        chatId,
+        "BQACAgUAAxkBAAEYxLRjP9F0S_60KJYdRghVGePXk8LWhgACpwcAAkWNAVaC_9Bh0oB0pCoE"
+      );
+    } else {
+      const result = (
+        await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
+          sentence: msg.text,
+        })
+      ).data.data;
 
-    await bot.sendMessage(chatId, resp.sql, opts);
-    await bot.sendMessage(chatId, "Jumlah data : " + resp.result.length, opts);
+      const resp = {
+        sql: result.translate,
+        result: result.query,
+      };
 
-    resp.result.map((element) => {
-      bot
-        .sendMessage(
+      const workSheet = XLSX.utils.json_to_sheet(resp.result);
+      const workBook = XLSX.utils.book_new();
+
+      XLSX.utils.book_append_sheet(workBook, workSheet);
+
+      XLSX.write(workBook, { bookType: "xlsx", type: "buffer" });
+
+      XLSX.writeFile(workBook, "data.xlsx");
+
+      await bot.sendMessage(chatId, resp.sql, opts);
+
+      if (resp.result.length == 1) {
+        bot.sendMessage(
           chatId,
-          JSON.stringify(element, null, 1).replace(/[{}]/g, ""),
-          opts
-        )
-        .catch((e) =>
-          bot.sendMessage(chatId, "Bad Request: reply message is too long")
+          JSON.stringify(resp.result[0], null, "･").replace(/[{"}]/g, "")
         );
-    });
+      } else if (resp.result.length > 1) {
+        await bot.sendDocument(chatId, "data.xlsx");
+      } else {
+        bot.sendMessage(chatId, "Data not found");
+      }
+    }
   } catch (error) {
-    if (error.response.data.message) {
-      bot.sendMessage(chatId, error.response.data.message);
+    console.log(error);
+    if (error?.response?.status) {
+      bot.sendMessage(chatId, error.response.data.message, opts);
+    } else {
+      bot.sendMessage(chatId, error);
     }
   }
 });

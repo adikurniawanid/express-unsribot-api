@@ -6,9 +6,18 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_jurusan.init(
     {
-      kode: DataTypes.STRING,
-      nama: DataTypes.STRING,
-      fakultasId: DataTypes.INTEGER,
+      kode: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      nama: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      fakultasId: {
+        allowNull: false,
+        type: DataTypes.INTEGER,
+      },
     },
     {
       sequelize,

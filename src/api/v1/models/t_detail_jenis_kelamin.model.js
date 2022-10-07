@@ -6,7 +6,10 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_detail_jenis_kelamin.init(
     {
-      deskripsi: DataTypes.STRING,
+      deskripsi: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,

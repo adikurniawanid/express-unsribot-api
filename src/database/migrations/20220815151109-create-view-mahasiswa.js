@@ -10,6 +10,7 @@ module.exports = {
       j.nama        AS 'jurusan',
       f.nama        AS 'fakultas',
       m.angkatan    AS 'angkatan',
+      m.suliet      AS 'suliet',
       djk.deskripsi AS 'jenis_kelamin',
       d.nama        AS 'dosen_pembimbing_akademik',
       ps.nama       AS 'program_studi',

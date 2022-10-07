@@ -1,19 +1,11 @@
 "use strict";
-const { sequelize } = require("../models");
-const {
-  kondisi,
-  kataPerintah,
-  sinonim,
-  stopword,
-  penangananNamaKolom,
-  penangananNamaTabel,
-  stemmer,
-} = require("../../../../public");
 const sequelizeConfig = require("../../../config/sequelize.config");
+const wordlist = require("../../../wordlist/wordlist.json");
+const { querySequelizeHelper } = require("../helpers");
 
 class DictionaryService {
-  static async getTableList() {
-    const [data, metadata] = await sequelize.query(
+  static async getViewList() {
+    const data = await querySequelizeHelper(
       `SELECT TABLE_NAME FROM information_schema.\`TABLES\` WHERE TABLE_TYPE LIKE 'VIEW' AND TABLE_SCHEMA LIKE '${sequelizeConfig.development.database}'`
     );
 
@@ -27,7 +19,7 @@ class DictionaryService {
   }
 
   static async getColumnList() {
-    const [data, metadata] = await sequelize.query(
+    const data = await querySequelizeHelper(
       `SELECT col.column_name FROM information_schema.columns col JOIN information_schema.views vie ON vie.table_schema=col.table_schema AND vie.table_name=col.table_name where col.table_schema not in ('sys', 'information_schema','mysql', 'performance_schema') AND vie.table_schema='${sequelizeConfig.development.database}'`
     );
 
@@ -40,9 +32,9 @@ class DictionaryService {
     return result;
   }
 
-  static async getColumnListByTable(tableParam) {
-    const [data, metadata] = await sequelize.query(
-      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${tableParam}' AND table_schema='${sequelizeConfig.development.database}'`
+  static async getColumnListByView(viewParam) {
+    const data = await querySequelizeHelper(
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${viewParam}' AND table_schema='${sequelizeConfig.development.database}'`
     );
 
     let result = [];
@@ -55,34 +47,35 @@ class DictionaryService {
   }
 
   static async getConditionList() {
-    return kondisi;
+    return wordlist.kondisi;
   }
 
   static async getSelectList() {
-    return kataPerintah;
+    return wordlist.perintah;
   }
 
   static async getSynonymList() {
-    return sinonim;
+    const result = wordlist.sinonim;
+    const data = await querySequelizeHelper(
+      `SELECT DISTINCT nama FROM mata_kuliah UNION SELECT DISTINCT nama FROM mahasiswa UNION SELECT DISTINCT nama FROM dosen UNION SELECT DISTINCT nama FROM t_jurusan ORDER BY CHAR_LENGTH(nama) DESC`
+    );
+
+    data.forEach((element) => {
+      result[element.nama.toLowerCase()] =
+        "(" + element.nama.toLowerCase() + ")";
+    });
+    return result;
   }
 
   static async getStopwordList() {
-    return stopword;
+    return wordlist.stopword;
   }
 
-  static async getColumnNameHandlerList() {
-    return penangananNamaKolom;
-  }
-
-  static async getTableNameHandlerList() {
-    return penangananNamaTabel;
-  }
-
-  static async getObjectColumnListByTable(arrayTableParam) {
+  static async getObjectColumnListByView(arrayViewParam) {
     const result = {};
-    for (let index = 0; index < arrayTableParam.length; index++) {
-      result[arrayTableParam[index]] = await this.getColumnListByTable(
-        arrayTableParam[index]
+    for (let index = 0; index < arrayViewParam.length; index++) {
+      result[arrayViewParam[index]] = await this.getColumnListByView(
+        arrayViewParam[index]
       );
     }
 
@@ -90,7 +83,7 @@ class DictionaryService {
   }
 
   static async getStemmerCustomList() {
-    return stemmer;
+    return wordlist.stemmer;
   }
 }
 

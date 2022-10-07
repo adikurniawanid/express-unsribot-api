@@ -11,7 +11,7 @@ class Nl2sqlController {
     try {
       const sentence = req.body.sentence;
       const preprocessing = await PreprocessorService.preprocessing(sentence);
-      const parsing = await ParserService.parsing(preprocessing);
+      const parsing = await ParserService.parsing(preprocessing.token);
       const translating = await TranslatorService.translating(parsing);
       const querying = await querySequelizeHelper(translating);
 

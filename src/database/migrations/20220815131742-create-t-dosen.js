@@ -9,12 +9,15 @@ module.exports = {
         type: Sequelize.INTEGER,
       },
       nip: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       nama: {
+        allowNull: false,
         type: Sequelize.STRING,
       },
       jurusanId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_jurusan",
@@ -22,6 +25,7 @@ module.exports = {
         },
       },
       jenisKelaminId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references: {
           model: "t_detail_jenis_kelamin",

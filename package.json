@@ -1,11 +1,13 @@
 {
   "name": "express-unsribot-api",
-  "version": "0.0.0",
+  "version": "1.0.0",
   "private": true,
   "scripts": {
     "start": "nodemon ./bin/www",
     "bot": "nodemon ./src/bot.js",
-    "test": "jest --detectOpenHandles"
+    "test": "jest --detectOpenHandles",
+    "testDataset": "jest ./test/dataset.test.js --detectOpenHandles",
+    "it": "jest ./test/integration.test.js --detectOpenHandles"
   },
   "dependencies": {
     "axios": "^0.27.2",
@@ -24,7 +26,8 @@
     "pg": "^8.7.3",
     "sastrawijs": "^1.0.4",
     "sequelize": "^6.21.3",
-    "uuid": "^8.3.2"
+    "uuid": "^8.3.2",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "jest": "^28.1.3",

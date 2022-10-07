@@ -6,8 +6,14 @@ module.exports = (sequelize, DataTypes) => {
   }
   t_fakultas.init(
     {
-      kode: DataTypes.STRING,
-      nama: DataTypes.STRING,
+      kode: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
+      nama: {
+        allowNull: false,
+        type: DataTypes.STRING,
+      },
     },
     {
       sequelize,
