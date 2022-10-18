@@ -151,7 +151,7 @@ describe("NL2sql API", () => {
         } else {
           expect(res.status).toBe(404);
           expect(res.body).toHaveProperty("message");
-          expect(res.body.message).toBe("View not found");
+          expect(res.body.message).toBe("View Table not found");
           done();
         }
       });
