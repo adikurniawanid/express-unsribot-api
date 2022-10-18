@@ -39,7 +39,7 @@ Contoh:
     } else if (msg.text === "/manualbook") {
       await bot.sendDocument(
         chatId,
-        "BQACAgUAAxkBAAEY0xpjQnO9skY1G2TTenLwSZi-0OEuOwAChgcAAupPGVZpr4g_He89yCoE"
+        "BQACAgUAAxkBAAEZHmtjTqjMvF_zh9GB2V_zG3MsspgFTAAC5wYAAt2_eFaItALTc_KG4ioE"
       );
     } else {
       const result = (
