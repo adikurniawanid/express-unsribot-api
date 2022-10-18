@@ -39,7 +39,7 @@ Contoh:
     } else if (msg.text === "/manualbook") {
       await bot.sendDocument(
         chatId,
-        "BQACAgUAAxkBAAEZHmtjTqjMvF_zh9GB2V_zG3MsspgFTAAC5wYAAt2_eFaItALTc_KG4ioE"
+        telegramBotConfig.TELEGRAM_BOT_MANUALBOOK_FILE_ID
       );
     } else {
       const result = (
