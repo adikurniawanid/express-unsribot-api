@@ -39,7 +39,7 @@ Contoh:
     } else if (msg.text === "/manualbook") {
       await bot.sendDocument(
         chatId,
-        "BQACAgUAAxkBAAEYxLRjP9F0S_60KJYdRghVGePXk8LWhgACpwcAAkWNAVaC_9Bh0oB0pCoE"
+        "BQACAgUAAxkBAAEZHmtjTqjMvF_zh9GB2V_zG3MsspgFTAAC5wYAAt2_eFaItALTc_KG4ioE"
       );
     } else {
       const result = (
@@ -79,6 +79,8 @@ Contoh:
     console.log(error);
     if (error?.response?.status) {
       bot.sendMessage(chatId, error.response.data.message, opts);
+    } else if (error?.code === "ECONNREFUSED") {
+      bot.sendMessage(chatId, "Internal Server Error, API is down", opts);
     } else {
       bot.sendMessage(chatId, error);
     }
