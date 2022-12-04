@@ -37,10 +37,12 @@ Contoh:
         opts
       );
     } else if (msg.text === "/manualbook") {
-      await bot.sendDocument(
-        chatId,
-        telegramBotConfig.TELEGRAM_BOT_MANUALBOOK_FILE_ID
-      );
+      await bot
+        .sendDocument(chatId, "./public/manualBook.pdf")
+        .catch((error) => {
+          console.log(error.code);
+          console.log(error.response.body);
+        });
     } else {
       const result = (
         await axios.post(telegramBotConfig.API_URL + "/nl2sql", {
@@ -70,7 +72,10 @@ Contoh:
           JSON.stringify(resp.result[0], null, "･").replace(/[{"}]/g, "")
         );
       } else if (resp.result.length > 1) {
-        await bot.sendDocument(chatId, "data.xlsx");
+        await bot.sendDocument(chatId, "data.xlsx").catch((error) => {
+          console.log(error.code);
+          console.log(error.response.body);
+        });
       } else {
         bot.sendMessage(chatId, "Data not found");
       }
