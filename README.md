@@ -2,6 +2,10 @@
 
 NL2SQL untuk Chatbot dengan Semantic Parsing Menggunakan Metode Berbasis Aturan adalah sistem yang digunakan untuk membantu pengguna dalam mengakses informasi pada basis data Sistem Informasi Akademik dengan masukan sistem berupa bahasa alami berupa kalimat perintah atau tanya melalui antarmuka chatbot dengan pendekatan semantic parsing menggunakan metode berbasis aturan, dan menghasilkan keluaran berupa Structured Query Language (SQL) beserta data hasil query basis data.
 
+
+![cover manual book](https://user-images.githubusercontent.com/72638249/205471387-c189677f-dc1a-406c-a16e-030c6bf15a87.jpg)
+
+
 ## Run Locally
 
 Clone the project
