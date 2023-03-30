@@ -72,15 +72,15 @@ class TranslatorService {
 
             if (columnConditionIdentify[index].operator === "kandung") {
               queryForming.push(
-                `LIKE "%${columnConditionIdentify[index].conditionValue}%"`
+                `ILIKE '%${columnConditionIdentify[index].conditionValue}%'`
               );
             } else if (columnConditionIdentify[index].operator === "awal") {
               queryForming.push(
-                `LIKE "${columnConditionIdentify[index].conditionValue}%"`
+                `ILIKE '${columnConditionIdentify[index].conditionValue}%'`
               );
             } else if (columnConditionIdentify[index].operator === "akhir") {
               queryForming.push(
-                `LIKE "%${columnConditionIdentify[index].conditionValue}"`
+                `ILIKE '%${columnConditionIdentify[index].conditionValue}'`
               );
             } else if (
               [">=", ">", "<=", "<", "=", "!="].includes(
@@ -88,12 +88,18 @@ class TranslatorService {
               )
             ) {
               queryForming.push(
-                `${columnConditionIdentify[index].operator} "${columnConditionIdentify[index].conditionValue}"`
+                `${columnConditionIdentify[index].operator} '${columnConditionIdentify[index].conditionValue}'`
               );
             } else {
-              queryForming.push(
-                `= "${columnConditionIdentify[index].conditionValue}"`
-              );
+              if (isNaN(columnConditionIdentify[index].conditionValue)) {
+                queryForming.push(
+                  `ILIKE '${columnConditionIdentify[index].conditionValue}'`
+                );
+              } else {
+                queryForming.push(
+                  `= '${columnConditionIdentify[index].conditionValue}'`
+                );
+              }
             }
 
             if (columnConditionIdentify[index + 1] !== undefined) {

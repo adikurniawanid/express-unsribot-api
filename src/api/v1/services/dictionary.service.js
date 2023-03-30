@@ -6,7 +6,8 @@ const { querySequelizeHelper } = require("../helpers");
 class DictionaryService {
   static async getViewList() {
     const data = await querySequelizeHelper(
-      `SELECT TABLE_NAME FROM information_schema.\`TABLES\` WHERE TABLE_TYPE LIKE 'VIEW' AND TABLE_SCHEMA LIKE '${sequelizeConfig.development.database}'`
+      `SELECT TABLE_NAME FROM information_schema.TABLES WHERE TABLE_TYPE LIKE 'VIEW' AND TABLE_SCHEMA LIKE 'public'`
+      // `SELECT TABLE_NAME FROM information_schema.\`TABLES\` WHERE TABLE_TYPE LIKE 'VIEW' AND TABLE_SCHEMA LIKE '${sequelizeConfig.development.database}'`
     );
 
     let result = [];
@@ -20,7 +21,8 @@ class DictionaryService {
 
   static async getColumnList() {
     const data = await querySequelizeHelper(
-      `SELECT col.column_name FROM information_schema.columns col JOIN information_schema.views vie ON vie.table_schema=col.table_schema AND vie.table_name=col.table_name where col.table_schema not in ('sys', 'information_schema','mysql', 'performance_schema') AND vie.table_schema='${sequelizeConfig.development.database}'`
+      `SELECT col.column_name FROM information_schema.columns col JOIN information_schema.views vie ON vie.table_schema=col.table_schema AND vie.table_name=col.table_name where col.table_schema not in ('sys', 'information_schema','mysql', 'performance_schema') AND vie.table_schema='public'`
+      // `SELECT col.column_name FROM information_schema.columns col JOIN information_schema.views vie ON vie.table_schema=col.table_schema AND vie.table_name=col.table_name where col.table_schema not in ('sys', 'information_schema','mysql', 'performance_schema') AND vie.table_schema='${sequelizeConfig.development.database}'`
     );
 
     let result = [];
@@ -34,7 +36,8 @@ class DictionaryService {
 
   static async getColumnListByView(viewParam) {
     const data = await querySequelizeHelper(
-      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${viewParam}' AND table_schema='${sequelizeConfig.development.database}'`
+      `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${viewParam}' AND table_schema='public'`
+      // `SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_NAME='${viewParam}' AND table_schema='${sequelizeConfig.development.database}'`
     );
 
     let result = [];
@@ -57,7 +60,8 @@ class DictionaryService {
   static async getSynonymList() {
     const result = wordlist.sinonim;
     const data = await querySequelizeHelper(
-      `SELECT DISTINCT nama FROM mata_kuliah UNION SELECT DISTINCT nama FROM mahasiswa UNION SELECT DISTINCT nama FROM dosen UNION SELECT DISTINCT nama FROM t_jurusan ORDER BY CHAR_LENGTH(nama) DESC`
+      // `SELECT DISTINCT nama FROM mata_kuliah UNION SELECT DISTINCT nama FROM mahasiswa UNION SELECT DISTINCT nama FROM dosen UNION SELECT DISTINCT nama FROM t_jurusan ORDER BY CHAR_LENGTH(nama) DESC`
+      `SELECT DISTINCT nama FROM mata_kuliah UNION SELECT DISTINCT nama FROM mahasiswa UNION SELECT DISTINCT nama FROM dosen UNION SELECT DISTINCT nama FROM t_jurusan`
     );
 
     data.forEach((element) => {
